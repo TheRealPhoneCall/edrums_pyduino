@@ -263,6 +263,8 @@ void loop(){
     String serialData = Serial.readStringUntil("}}");
     setDeviceValues(serialData);
     Serial.println("Configuration updated.");
+    state = 0;
+    drumRoutine();
   } else {
     state = 0;
     drumRoutine();
