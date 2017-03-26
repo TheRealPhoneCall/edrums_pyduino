@@ -257,7 +257,7 @@ void drumRoutine(){
 
 void loop(){
   // Check which state the current program runs
-  if (Serial.available()) {
+  if (!Serial.available()) {
     state = 1;
     Serial.println("Initiating configuaration setup routine...");
     String serialData = Serial.readStringUntil("}}");
