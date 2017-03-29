@@ -39,6 +39,7 @@ unsigned int noteArray[NUM_PIEZOS];
 unsigned short state = 0; // 0 for play state
                           // 1 for configure state
 unsigned int configMatrix[5][NUM_PIEZOS] = {};
+char drumPadArray = {'SNARE', 'LTOM', 'RTOM', 'LCYM', 'RCYM', 'KICK'};
 unsigned int defaultConfigMatrix[5][6] = {
   {BAUD_RATE, TIME_OUT, NOTE_ON, NOTE_OFF, MAX_VELOCITY, 0}, // main defaults
   // Array daults. Order: { Snare, LTom, RTom, LCym, RCym, Kick }
@@ -184,18 +185,6 @@ void updateConfigValues(String configMatrix0, String configMatrix1, String confi
 }
 
 void setDeviceValues(String serialData){
-  /* 
-      configMatrix[0][i] = defaultConfigMatrix[0][i];
-      configMatrix[1][i] = defaultConfigMatrix[1][i];
-      configMatrix[2][i] = defaultConfigMatrix[2][i];
-      configMatrix[3][i] = defaultConfigMatrix[3][i];
-      configMatrix[4][i] = defaultConfigMatrix[4][i];
-
-      ledPinsArray[i] = configMatrix[1][i];
-      piezoPinsArray[i] = configMatrix[2][i];
-      thresholdArray[i] = configMatrix[3][i];
-      noteArray[i] = configMatrix[4][i];
-  */
   // Get the array parts of the serialData
   String configMatrix0 = getStringPartByNr(serialData, "},{", 0);  
   String configMatrix1 = getStringPartByNr(serialData, "},{", 1);
@@ -214,11 +203,12 @@ void setDeviceValues(String serialData){
 }
 
 //send MIDI message
-void sendMidiMsg(byte command, byte note, byte velocity) {
+void sendMidiMsg(char drumPad, byte command, byte note, byte velocity) {
+  String strDrumPad = String(strDrumPad);
   String strNoteOnCmd = String(command);  
   String strNote = String(note);  
   String strVelocity = String(velocity);
-  Serial.println(strNoteOnCmd + "." + strNote + "." + strVelocity);
+  Serial.println(strDrumPad + ": " + strNoteOnCmd + "." + strNote + "." + strVelocity);
 }
 
 int getMaxVal(int lastVal, int piezoPin){
@@ -239,7 +229,8 @@ void drumRoutine(){
     // Check if the piezo passes threshold voltage
     if (piezoVal>threshold){
       byte noteOn = NOTE_ON;
-      byte noteMidi = noteArray[i];    
+      byte noteMidi = noteArray[i];
+      char drumPad = drumPadArray[i];    
 
       // Get max piezoValue 
       int maxPiezoVal = getMaxVal(piezoVal, piezoPin);
@@ -247,9 +238,9 @@ void drumRoutine(){
                                                  //velocity between 50 and 127 
                                                  //based on max val from piezo
       
-      sendMidiMsg(noteOn, noteMidi, velocity);
+      sendMidiMsg(drumPad, noteOn, noteMidi, velocity);
       delay(500);
-      sendMidiMsg(noteOn, noteMidi, 0);
+      sendMidiMsg(drumPad, noteOn, noteMidi, 0);
     }
   }
   
