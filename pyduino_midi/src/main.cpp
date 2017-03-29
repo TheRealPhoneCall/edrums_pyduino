@@ -204,7 +204,7 @@ void setDeviceValues(String serialData){
 
 //send MIDI message
 void sendMidiMsg(char drumPad, byte command, byte note, byte velocity) {
-  String strDrumPad = String(strDrumPad);
+  String strDrumPad = String(drumPad);
   String strNoteOnCmd = String(command);  
   String strNote = String(note);  
   String strVelocity = String(velocity);
