@@ -39,7 +39,7 @@ unsigned int noteArray[NUM_PIEZOS];
 unsigned short state = 0; // 0 for play state
                           // 1 for configure state
 unsigned int configMatrix[5][NUM_PIEZOS] = {};
-char drumPadArray = {'SNARE', 'LTOM', 'RTOM', 'LCYM', 'RCYM', 'KICK'};
+char drumPadArray[] = {'SNARE', 'LTOM', 'RTOM', 'LCYM', 'RCYM', 'KICK'};
 unsigned int defaultConfigMatrix[5][6] = {
   {BAUD_RATE, TIME_OUT, NOTE_ON, NOTE_OFF, MAX_VELOCITY, 0}, // main defaults
   // Array daults. Order: { Snare, LTom, RTom, LCym, RCym, Kick }
