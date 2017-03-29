@@ -257,16 +257,17 @@ void drumRoutine(){
 
 void loop(){
   // Check which state the current program runs
-  if (!Serial.available()) {
-    state = 1;
-    Serial.println("Initiating configuaration setup routine...");
-    String serialData = Serial.readStringUntil("}}");
-    setDeviceValues(serialData);
-    Serial.println("Configuration updated.");
-    state = 0;
-    drumRoutine();
-  } else {
-    state = 0;
-    drumRoutine();
-  }
+  // if (Serial.available()) {
+  //   // state = 1;
+  //   Serial.println("Initiating configuaration setup routine...");
+  //   String serialData = Serial.readStringUntil("}}");
+  //   setDeviceValues(serialData);
+  //   Serial.println("Configuration updated.");
+  //   state = 0;
+  //   drumRoutine();
+  // } else {
+  //   // state = 0;
+  //   drumRoutine();
+  // }
+  drumRoutine();
 }
