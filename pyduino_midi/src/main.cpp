@@ -235,7 +235,8 @@ void drumRoutine(){
 
       // Get max piezoValue 
       int maxPiezoVal = getMaxVal(piezoVal, piezoPin);
-      int velocity = map(maxPiezoVal, 0, 1023, threshold, 300); //300 has to be peak
+      int velocity = map(maxPiezoVal, 0, 1023, threshold, 127); 
+                                                 //300 has to be peak
                                                  //velocity between 50 and 127 
                                                  //based on max val from piezo
       
