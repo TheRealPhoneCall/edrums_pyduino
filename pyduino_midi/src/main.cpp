@@ -208,7 +208,8 @@ void sendMidiMsg(char drumPad, byte command, byte note, byte velocity) {
   String strNoteOnCmd = String(command);  
   String strNote = String(note);  
   String strVelocity = String(velocity);
-  Serial.println(strDrumPad + ": " + strNoteOnCmd + "." + strNote + "." + strVelocity);
+  Serial.println(strNoteOnCmd + "." + strNote + "." + strVelocity);
+  // Serial.println(strDrumPad + ": " + strNoteOnCmd + "." + strNote + "." + strVelocity);
 }
 
 int getMaxVal(int lastVal, int piezoPin){
