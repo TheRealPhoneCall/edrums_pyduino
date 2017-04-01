@@ -20,6 +20,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "Arduino.h"
+
 //Led Pin
 const int greenPin = 9;
 const int redPin = 10;
@@ -78,6 +80,75 @@ boolean isLastPeakZeroedArray[NUM_PIEZOS];
 
 unsigned long lastPeakTimeArray[NUM_PIEZOS];
 unsigned long lastNoteTimeArray[NUM_PIEZOS];
+
+void midiNoteOn(byte note, byte midiVelocity)
+{
+  String strNoteOnCmd = String(NOTE_ON_CMD);
+  Serial.println(strNoteOnCmd);
+  String strNote = String(note);
+  Serial.println(strNote);
+  String strVelocity = String(midiVelocity);
+  Serial.println(strVelocity);
+}
+
+void midiNoteOff(byte note, byte midiVelocity)
+{
+  String strNoteOnCmd = String(NOTE_OFF_CMD);
+  Serial.println(String(NOTE_OFF_CMD));
+  String strNote = String(note);
+  Serial.println(strNote);
+  String strVelocity = String(midiVelocity);
+  Serial.println(strVelocity);
+}
+
+void noteFire(unsigned short note, unsigned short velocity)
+{
+  if(velocity > MAX_MIDI_VELOCITY)
+    velocity = MAX_MIDI_VELOCITY;
+  
+  midiNoteOn(note, velocity);
+  midiNoteOff(note, velocity);
+
+  analogWrite(greenPin, val);
+}
+
+void recordNewPeak(short slot, short newPeak)
+{
+  isLastPeakZeroedArray[slot] = (newPeak == 0);
+  
+  unsigned long currentTime = millis();
+  lastPeakTimeArray[slot] = currentTime;
+  
+  //new peak recorded (newPeak)
+  peakBuffer[slot][peakIndexArray[slot]] = newPeak;
+  
+  //1 of 3 cases can happen:
+  // 1) note ready - if new peak >= previous peak
+  // 2) note fire - if new peak < previous peak and previous peak was a note ready
+  // 3) no note - if new peak < previous peak and previous peak was NOT note ready
+  
+  //get previous peak
+  short prevPeakIndex = peakIndexArray[slot]-1;
+  if(prevPeakIndex < 0) prevPeakIndex = PEAK_BUFFER_SIZE-1;        
+  unsigned short prevPeak = peakBuffer[slot][prevPeakIndex];
+   
+  if(newPeak > prevPeak && (currentTime - lastNoteTimeArray[slot])>MIN_TIME_BETWEEN_NOTES)
+  {
+    noteReadyArray[slot] = true;
+    if(newPeak > noteReadyVelocityArray[slot])
+      noteReadyVelocityArray[slot] = newPeak;
+  }
+  else if(newPeak < prevPeak && noteReadyArray[slot])
+  {
+    noteFire(noteMap[slot], noteReadyVelocityArray[slot]);
+    noteReadyArray[slot] = false;
+    noteReadyVelocityArray[slot] = 0;
+    lastNoteTimeArray[slot] = currentTime;
+  }
+  
+  peakIndexArray[slot]++;
+  if(peakIndexArray[slot] == PEAK_BUFFER_SIZE) peakIndexArray[slot] = 0;  
+}
 
 void setup()
 {
