@@ -72,6 +72,6 @@ except KeyboardInterrupt:
     print "Current MIDI message:"
     print midi_msgs
 
-    del midi_out
-    player.midi.quit()
+    del player
+    pygame.midi.quit()
     
