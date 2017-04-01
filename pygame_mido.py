@@ -1,50 +1,55 @@
+import serial
+import pygame.midi
 from mido import Message, MidiFile, MidiTrack
+
 import time
 from datetime import timedelta as timedelta
 
-import serial
-ser = serial.Serial('/dev/ttyUSB0', 9600)
+# instantiate serial
+serial = serial.Serial('/dev/ttyUSB0', 9600)
 print "Starting serial communication."
-print ser
+print serial
 
-# TODO: Learn midi playback with pygame
-import pygame.midi
-pygame.midi.init()
-player = pygame.midi.Output(0)
-player.set_instrument(0)
-
-mid = MidiFile()
+# instantiate midi
+midi = MidiFile()
 track = MidiTrack()
-mid.tracks.append(track)
+midi.tracks.append(track)
 
+# initialize time
 start_time = time.time()
 prev_time = start_time
 
 # instantiate track:
 track.append(Message('program_change', program=12, time=0))
 midi_msgs = []
-old_midi_msg = ""
+
+# instantiate pygame player
+pygame.midi.init()
+player = pygame.midi.Output(0)
+GRAND_PIANO = 0
+CHURCH_ORGAN = 19
+player.set_instrument(0)
+
+
 
 try:
     # loop through the midi messages received
     while True:
-        ser.readline()
-        midi_msg = ser.readline()
-        midi_msg = midi_msg.split(".")
-        # print midi_msg
+        # read the midi msg
+        midi_read = serial.readline()
+        midi_read = midi_msg.split(".")
         current_time = time.time()
         midi_msg = {
-            'note_cmd': 'note_on' if int(midi_msg[0]) == 90 else 'note_off',
-            'note': int(midi_msg[1]),
-            'velocity': int(midi_msg[2]),
-            'timedelta': int(current_time-prev_time)
+            'note_cmd': 'note_on' if int(midi_read[0]) == 90 else 'note_off',
+            'note': int(midi_read[1]),
+            'velocity': int(midi_read[2]),
+            'timedelta': int(current_time-start_time)
         }
+
+        # print and append midi msg
         print "reading midi:"
         print midi_msg
         midi_msgs.append(midi_msg)
-
-        old_midi_msg = midi_msg
-        prev_time = current_time
 
         # play midi msg
         if midi_msg['note_cmd'] == 'note_on':
@@ -54,11 +59,19 @@ try:
         
         # append track
         track.append(Message(midi_msg['note_cmd'], note=midi_msg['note'], 
-                             velocity=midi_msg['velocity'], time=midi_msg['timedelta']))
+                             velocity=midi_msg['velocity'], 
+                             time=midi_msg['timedelta']))
+        
+        # store current_time as prev_time
+        prev_time = current_time
+
 except KeyboardInterrupt:
     print "Keyboard interrupted."
     print "Serial reading is now terminated."
-    mid.save('from_arduino.mid')
+    midi.save('from_arduino.mid')
     print "Current MIDI message:"
     print midi_msgs
+
+    del midi_out
+    player.midi.quit()
     
