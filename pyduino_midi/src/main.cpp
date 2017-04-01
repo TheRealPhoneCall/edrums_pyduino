@@ -84,11 +84,13 @@ unsigned long lastNoteTimeArray[NUM_PIEZOS];
 void midiNoteOn(byte note, byte midiVelocity)
 {
   String strNoteOnCmd = String(NOTE_ON_CMD);
-  Serial.println(strNoteOnCmd);
+  // Serial.println(strNoteOnCmd);
   String strNote = String(note);
-  Serial.println(strNote);
+  // Serial.println(strNote);
   String strVelocity = String(midiVelocity);
-  Serial.println(strVelocity);
+  // Serial.println(strVelocity);
+
+  Serial.println(strNoteOnCmd + "." + strNote + "." + strVelocity);
 }
 
 void midiNoteOff(byte note, byte midiVelocity)
