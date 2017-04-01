@@ -58,21 +58,21 @@ unsigned short defaultConfigMatrix[5][6] = {
 
 // Initialize signal buffers and peaks
 // To be used to determine the max peak value of the piezo
-short currentSignalIndexArray[NUM_PIEZOS];
-short currentPeakIndexArray[NUM_PIEZOS];
+short signalIndexArray[NUM_PIEZOS];
+short peakIndexArray[NUM_PIEZOS];
 unsigned short signalBuffer[NUM_PIEZOS][SIGNAL_BUFFER_SIZE];
 unsigned short peakBuffer[NUM_PIEZOS][PEAK_BUFFER_SIZE];
 
-boolean noteReadyArray[NUM_PIEZOS];
+bool noteReadyArray[NUM_PIEZOS];
 unsigned short noteReadyVelocityArray[NUM_PIEZOS];
-boolean isLastPeakZeroedArray[NUM_PIEZOS];
+bool isLastPeakZeroedArray[NUM_PIEZOS];
 
 unsigned long lastPeakTimeArray[NUM_PIEZOS];
 unsigned long lastNoteTimeArray[NUM_PIEZOS];
 
 // initialize values used for getting and setting values from buffers
-int piezoPin, piezoVal, threshold;
-boolean isLastPeakZeroed, noteReady;  
+int piezoPin, ledPin, newSignal, threshold;
+bool isLastPeakZeroed, noteReady;  
 short signalIndex, peakIndex;
 unsigned long lastPeakTime, lastNoteTime;
 unsigned short signalVal, peakVal, noteReadyVelocity;
@@ -106,15 +106,15 @@ void setupInitialValues(){
     }
 
     // initialize buffer values
-    currentSignalIndex[i] = 0;
-    currentPeakIndex[i] = 0;
+    signalIndexArray[i] = 0;
+    peakIndexArray[i] = 0;
     memset(signalBuffer[i],0,sizeof(signalBuffer[i]));
     memset(peakBuffer[i],0,sizeof(peakBuffer[i]));
-    noteReady[i] = false;
-    noteReadyVelocity[i] = 0;
-    isLastPeakZeroed[i] = true;
-    lastPeakTime[i] = 0;
-    lastNoteTime[i] = 0;    
+    noteReadyArray[i] = false;
+    noteReadyVelocityArray[i] = 0;
+    isLastPeakZeroedArray[i] = true;
+    lastPeakTimeArray[i] = 0;
+    lastNoteTimeArray[i] = 0;    
     
   }
 
@@ -145,7 +145,6 @@ void setup(){
 
   // Serial comm setup
   Serial.setTimeout(TIME_OUT);
-  Serial.println("Starting");
 }
 
 /* LOOP Subroutines */
@@ -259,17 +258,19 @@ void sendMidiMsg(byte command, byte note, byte velocity) {
   // Serial.println(strDrumPad + ": " + strNoteOnCmd + "." + strNote + "." + strVelocity);
 }
 
-void fireDrumNote(unsigned short note, unsigned short velocity) {
-  if(velocity > MAX_MIDI_VELOCITY)
-    velocity = MAX_MIDI_VELOCITY;
+void fireDrumNote(unsigned short note, unsigned short velocity, 
+                  unsigned short ledPin) {
+  if(velocity > MAX_VELOCITY)
+    velocity = MAX_VELOCITY;
   
   sendMidiMsg(NOTE_ON, note, velocity);
   sendMidiMsg(NOTE_OFF, note, velocity);
 
-  analogWrite(greenPin, velocity*2);
+  analogWrite(ledPin, velocity*2);
 }
 
-void updateBuffersAndRecordNewPeak(short piezoPin, short newPeak){
+void updateBuffersAndRecordNewPeak(short piezoPin, short newPeak,
+                                   short threshold, short ledPin){
   isLastPeakZeroedArray[piezoPin] = (newPeak == 0);
   
   unsigned long currentTime = millis();
@@ -299,10 +300,10 @@ void updateBuffersAndRecordNewPeak(short piezoPin, short newPeak){
       noteReadyVelocityArray[piezoPin] = newPeak;
   } else if((newPeak < prevPeak) && noteReady) {
     // case note fire - send midi
-    byte velocity = noteReadyVelocityArray[piezoPin];
-    velocity = map(velocity, 0, 1023, threshold, 127)
-    byte note = noteArray[piezoPin]l
-    fireDrumNote(note, velocity);
+    unsigned short velocity = noteReadyVelocityArray[piezoPin];
+    velocity = map(velocity, 0, 1023, threshold, 127);
+    unsigned short note = noteArray[piezoPin];
+    fireDrumNote(note, velocity, ledPin);
     noteReadyArray[piezoPin] = false;
     noteReadyVelocityArray[piezoPin] = 0;
     lastNoteTimeArray[piezoPin] = currentTime;
@@ -322,6 +323,7 @@ void drumRoutine(){
   // Read through all the piezos
   for (short i; i<NUM_PIEZOS; i++){
     piezoPin = piezoPinsArray[i];
+    ledPin = ledPinsArray[piezoPin];
     newSignal = analogRead(piezoPin);
     threshold = thresholdArray[i];
     signalIndex = signalIndexArray[i];
@@ -330,13 +332,13 @@ void drumRoutine(){
     signalBuffer[i][signalIndex] = newSignal;
 
     // Get previous values from buffer
-    boolean isLastPeakZeroed = isLastPeakZeroedArray[i];
+    bool isLastPeakZeroed = isLastPeakZeroedArray[i];
     unsigned long lastPeakTime = lastNoteTimeArray[i];
 
     // Check if the piezo signal passes threshold voltage
     if (newSignal < threshold){
-      if (!iisLastPeakZeroed && ((currentTime - lastPeakTime) > MAX_TIME_BETWEEN_PEAKS)) {
-        updateBuffersAndRecordNewPeak(i,0,threshold);
+      if (!isLastPeakZeroed && ((currentTime - lastPeakTime) > MAX_TIME_BETWEEN_PEAKS)) {
+        updateBuffersAndRecordNewPeak(i, 0, threshold, ledPin);
       } else {
         // get previous signal from buffer
         short prevSignalIndex = signalIndexArray[i]-1;
@@ -365,7 +367,7 @@ void drumRoutine(){
         }
 
         if (newPeak > 0) {
-          updateBuffersAndRecordNewPeak(i, newPeak);
+          updateBuffersAndRecordNewPeak(i, newPeak, threshold, ledPin);
         }
 
       }      
