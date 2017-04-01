@@ -109,7 +109,7 @@ void noteFire(unsigned short note, unsigned short velocity)
   midiNoteOn(note, velocity);
   midiNoteOff(note, velocity);
 
-  analogWrite(greenPin, val);
+  analogWrite(greenPin, 2*velocity);
 }
 
 void recordNewPeak(short slot, short newPeak)
