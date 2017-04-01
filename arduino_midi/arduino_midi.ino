@@ -67,17 +67,17 @@ unsigned short noteMap[NUM_PIEZOS];
 unsigned short thresholdMap[NUM_PIEZOS];
 
 //Ring buffers to store analog signal and peaks
-short currentSignalIndex[NUM_PIEZOS];
-short currentPeakIndex[NUM_PIEZOS];
+short signalIndexArray[NUM_PIEZOS];
+short peakIndexArray[NUM_PIEZOS];
 unsigned short signalBuffer[NUM_PIEZOS][SIGNAL_BUFFER_SIZE];
 unsigned short peakBuffer[NUM_PIEZOS][PEAK_BUFFER_SIZE];
 
-boolean noteReady[NUM_PIEZOS];
-unsigned short noteReadyVelocity[NUM_PIEZOS];
-boolean isLastPeakZeroed[NUM_PIEZOS];
+boolean noteReadyArray[NUM_PIEZOS];
+unsigned short noteReadyVelocityArray[NUM_PIEZOS];
+boolean isLastPeakZeroedArray[NUM_PIEZOS];
 
-unsigned long lastPeakTime[NUM_PIEZOS];
-unsigned long lastNoteTime[NUM_PIEZOS];
+unsigned long lastPeakTimeArray[NUM_PIEZOS];
+unsigned long lastNoteTimeArray[NUM_PIEZOS];
 
 void setup()
 {
@@ -86,15 +86,15 @@ void setup()
   //initialize globals
   for(short i=0; i<NUM_PIEZOS; ++i)
   {
-    currentSignalIndex[i] = 0;
-    currentPeakIndex[i] = 0;
+    signalIndexArray[i] = 0;
+    peakIndexArray[i] = 0;
     memset(signalBuffer[i],0,sizeof(signalBuffer[i]));
     memset(peakBuffer[i],0,sizeof(peakBuffer[i]));
-    noteReady[i] = false;
-    noteReadyVelocity[i] = 0;
-    isLastPeakZeroed[i] = true;
-    lastPeakTime[i] = 0;
-    lastNoteTime[i] = 0;    
+    noteReadyArray[i] = false;
+    noteReadyVelocityArray[i] = 0;
+    isLastPeakZeroedArray[i] = true;
+    lastPeakTimeArray[i] = 0;
+    lastNoteTimeArray[i] = 0;    
     slotMap[i] = START_SLOT + i;
   }
   
@@ -124,19 +124,19 @@ void loop()
   {
     //get a new signal from analog read
     unsigned short newSignal = analogRead(slotMap[i]);
-    signalBuffer[i][currentSignalIndex[i]] = newSignal;
+    signalBuffer[i][signalIndexArray[i]] = newSignal;
     
     //if new signal is 0
     if(newSignal < thresholdMap[i])
     {
-      if(!isLastPeakZeroed[i] && (currentTime - lastPeakTime[i]) > MAX_TIME_BETWEEN_PEAKS)
+      if(!isLastPeakZeroedArray[i] && (currentTime - lastPeakTimeArray[i]) > MAX_TIME_BETWEEN_PEAKS)
       {
         recordNewPeak(i,0);
       }
       else
       {
         //get previous signal
-        short prevSignalIndex = currentSignalIndex[i]-1;
+        short prevSignalIndex = signalIndexArray[i]-1;
         if(prevSignalIndex < 0) prevSignalIndex = SIGNAL_BUFFER_SIZE-1;        
         unsigned short prevSignal = signalBuffer[i][prevSignalIndex];
         
@@ -165,20 +165,20 @@ void loop()
   
     }
         
-    currentSignalIndex[i]++;
-    if(currentSignalIndex[i] == SIGNAL_BUFFER_SIZE) currentSignalIndex[i] = 0;
+    signalIndexArray[i]++;
+    if(signalIndexArray[i] == SIGNAL_BUFFER_SIZE) signalIndexArray[i] = 0;
   }
 }
 
 void recordNewPeak(short slot, short newPeak)
 {
-  isLastPeakZeroed[slot] = (newPeak == 0);
+  isLastPeakZeroedArray[slot] = (newPeak == 0);
   
   unsigned long currentTime = millis();
-  lastPeakTime[slot] = currentTime;
+  lastPeakTimeArray[slot] = currentTime;
   
   //new peak recorded (newPeak)
-  peakBuffer[slot][currentPeakIndex[slot]] = newPeak;
+  peakBuffer[slot][peakIndexArray[slot]] = newPeak;
   
   //1 of 3 cases can happen:
   // 1) note ready - if new peak >= previous peak
@@ -186,26 +186,26 @@ void recordNewPeak(short slot, short newPeak)
   // 3) no note - if new peak < previous peak and previous peak was NOT note ready
   
   //get previous peak
-  short prevPeakIndex = currentPeakIndex[slot]-1;
+  short prevPeakIndex = peakIndexArray[slot]-1;
   if(prevPeakIndex < 0) prevPeakIndex = PEAK_BUFFER_SIZE-1;        
   unsigned short prevPeak = peakBuffer[slot][prevPeakIndex];
    
-  if(newPeak > prevPeak && (currentTime - lastNoteTime[slot])>MIN_TIME_BETWEEN_NOTES)
+  if(newPeak > prevPeak && (currentTime - lastNoteTimeArray[slot])>MIN_TIME_BETWEEN_NOTES)
   {
-    noteReady[slot] = true;
-    if(newPeak > noteReadyVelocity[slot])
-      noteReadyVelocity[slot] = newPeak;
+    noteReadyArray[slot] = true;
+    if(newPeak > noteReadyVelocityArray[slot])
+      noteReadyVelocityArray[slot] = newPeak;
   }
-  else if(newPeak < prevPeak && noteReady[slot])
+  else if(newPeak < prevPeak && noteReadyArray[slot])
   {
-    noteFire(noteMap[slot], noteReadyVelocity[slot]);
-    noteReady[slot] = false;
-    noteReadyVelocity[slot] = 0;
-    lastNoteTime[slot] = currentTime;
+    noteFire(noteMap[slot], noteReadyVelocityArray[slot]);
+    noteReadyArray[slot] = false;
+    noteReadyVelocityArray[slot] = 0;
+    lastNoteTimeArray[slot] = currentTime;
   }
   
-  currentPeakIndex[slot]++;
-  if(currentPeakIndex[slot] == PEAK_BUFFER_SIZE) currentPeakIndex[slot] = 0;  
+  peakIndexArray[slot]++;
+  if(peakIndexArray[slot] == PEAK_BUFFER_SIZE) peakIndexArray[slot] = 0;  
 }
 
 void noteFire(unsigned short note, unsigned short velocity)
