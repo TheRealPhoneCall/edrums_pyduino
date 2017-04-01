@@ -37,7 +37,7 @@ try:
     while True:
         # read the midi msg
         midi_read = serial.readline()
-        midi_read = midi_msg.split(".")
+        midi_read = midi_read.split(".")
         current_time = time.time()
         midi_msg = {
             'note_cmd': 'note_on' if int(midi_read[0]) == 90 else 'note_off',
