@@ -89,9 +89,9 @@ def main():
                 while not max_peak_is_reached:
                     val = get_pin_val(msg_recvd) 
                     
-                    if vel_obj[pin].is_triggered(val): 
+                    if vel_obj[pin].is_triggered(): 
                         # if above threshold, find the peak
-                        if vel_obj[pin].is_peak_reached():
+                        if vel_obj[pin].is_peak_reached(val):
                             # vel_obj[pin].update_values(val) 
 
                             # if the peak is reached, check whether this peak
