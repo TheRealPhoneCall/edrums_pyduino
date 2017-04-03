@@ -27,8 +27,8 @@ unsigned long TIME_OUT=1000;
 // Initialize config arrays, their default values are 
 // set in the next block
 char drumPadArray[] = {'SNARE', 'LTOM', 'RTOM', 'LCYM', 'RCYM', 'KICK'};
-unsigned short ledPinsArray[NUM_PIEZOS] = {0, 1, 2, 3, 4, 5};
-unsigned short piezoPinsArray[NUM_PIEZOS] = {3, 5, 6, 9, 10, 11};
+unsigned short ledPinsArray[NUM_PIEZOS] = {3, 5, 6, 9, 10, 11};
+unsigned short piezoPinsArray[NUM_PIEZOS] = {0, 1, 2, 3, 4, 5};
 
 void setup(){
   Serial.begin(BAUD_RATE);
