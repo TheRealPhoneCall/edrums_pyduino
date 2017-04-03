@@ -43,13 +43,19 @@ void setup(){
 
 void loop(){  
   unsigned short piezoPin, piezoVal;
-  String strPiezoPin, strPiezoVal;
+  String strPiezoPin, strPiezoVal, strSerialMsg="";
 
   for(short i=0; i<NUM_PIEZOS; ++i) {
     piezoPin = piezoPinsArray[i]
     piezoVal = analogRead(piezoPin);
     strPiezoPin = String(piezoPin);
     strPiezoVal = String(piezoVal);
-    Serial.println(strPiezoPin + ": " + strPiezoVal);
+    if (strSerialMsg == "") {
+      strSerialMsg = strPiezoPin + ":" + strPiezoVal;
+    } else {
+      strSerialMsg = strSerialMsg + "," strPiezoPin + ":" + strPiezoVal;
+    }
   }
+  Serial.println(strSerialMsg);
+  delay(10);
 }
