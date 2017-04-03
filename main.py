@@ -30,7 +30,7 @@ def main():
             # read serial first
             msgs_recvd = serial_recv(ser)
             msgs_recvd = get_msgs_recvd(msgs_recvd)
-            print msg_recvd
+            print msgs_recvd
 
             for pin in DEFAULT_PINS:
                 # initialize vel object
