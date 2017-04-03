@@ -6,7 +6,7 @@ import time
 from datetime import timedelta as timedelta
 
 # instantiate serial
-serial = serial.Serial('/dev/ttyUSB0', 31250)
+serial = serial.Serial('/dev/ttyUSB0', 9600)
 print "Starting serial communication."
 print serial
 
