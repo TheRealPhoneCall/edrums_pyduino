@@ -14,38 +14,44 @@ def serial_recv(ser):
     return ser.readline()
 
 def get_pin_val(msg_recvd):
-    msg_recvd = msg_recvd.split(": ")
-    return int(msg_recvd[0]), int(msg_recvd[1])
+    msg_recvd = msg_recvd.split(":")
+    return int(msg_recvd[1])
+
+def get_msgs_recvd(msgs_recvd):
+    return msgs_recvd.split(",")
 
 def main():
     try:
         while True:
-            for pin in DEFAULT_PINS:
-                # read serial first
-                msg_recvd = serial_recv(ser)
-                print msg_recvd
+            vel_obj = []
+            # read serial first
+            msgs_recvd = serial_recv(ser)
+            msgs_recvd = get_msgs_recvd(msgs_recvd)
+            print msg_recvd
 
+            for pin in DEFAULT_PINS:
                 # initialize vel object
-                pin, val = get_pin_val(msg_recvd)
-                vel = Velocity(pin, velocity)
+                msg_recvd = msgs_recvd[pin]
+                val = get_pin_val(msg_recvd)
+                vel_obj[pin] = Velocity(pin, val)
                 
                 # keep reading until the peak is reached
                 max_peak_is_reached = False
                 while not max_peak_is_reached:
-                    pin, val = get_pin_val(msg_recvd) 
-                    vel.update_values(val)                   
+                    val = get_pin_val(msg_recvd) 
+                    vel_obj[pin].update_values(val)                   
                     
-                    if vel.is_triggered(val) and vel.is_max_peak_reached(val):
+                    if vel_obj[pin].is_triggered(val) and vel_obj[pin].is_max_peak_reached(val):
                         max_peak_is_reached = True
-                        velocity = vel.velocity()
+                        velocity = vel_obj[pin].velocity()
                         fire_note(pin, velocity)
                         break
                     else:
-                        if vel.is_peak_reached():
-                            vel.update_values(val) 
+                        if vel_obj[pin].is_peak_reached():
+                            vel_obj[pin].update_values(val) 
                         else:
 
-                        max_peak_is_reached = True
+                        max_peak_is_reached = False
                     
                     # delay for next reading
                     time.sleep(0.010)
