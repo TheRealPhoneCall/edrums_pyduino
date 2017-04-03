@@ -4,10 +4,10 @@ from .utils import map
 class Velocity(object):
     def __init__(self, pin, val):
         self.pin = pin        
-        self.threshold = THRESHOLD[pin]
-        self.val = map(val, 0, 1023, self.threshold, MAX_VELOCITY)
-        self.velocity = None
+        self.threshold = THRESHOLDS[pin]
         self.max_velocity = MAX_VELOCITY
+        self.val = map(val, 0, 1023, self.threshold, self.max_velocity)
+        self.velocity = None
         self.peak = None
         self.max_peak = None
 
@@ -18,7 +18,7 @@ class Velocity(object):
             return False
     
     def get_current_velocity(self, val):
-        return map(val, 0, 1023, self.threshold, MAX_VELOCITY)
+        return map(val, 0, 1023, self.threshold, self.max_velocity)
 
     def get_max_velocity(self, val):
         self.val = val        
