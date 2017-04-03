@@ -1,8 +1,8 @@
 import serial
 try:
-    ser = serial.Serial('/dev/ttyUSB0', 9600)
+    ser = serial.Serial('/dev/ttyUSB0', 31250)
 except:
-    ser = serial.Serial('COM5', 9600)
+    ser = serial.Serial('COM5', 31250)
 print "Starting serial communication."
 print ser
 
@@ -14,11 +14,6 @@ def serial_recv(ser):
 
 def main():
     try:
-        data = "{" + "{9600,1000,100,80,127,0}," + "{3,4,5,10,13,16}," + \
-                    "{0,1,2,3,4,5}," + "{30,40,50,120,120,60}," + \
-                    "{76,77,78,79,80,81}" + "}"
-        print data
-        serial_send(ser, data)
         while True:
             msg_recvd = serial_recv(ser)
             print msg_recvd
