@@ -31,7 +31,7 @@ unsigned short ledPinsArray[NUM_PIEZOS] = {0, 1, 2, 3, 4, 5};
 unsigned short piezoPinsArray[NUM_PIEZOS] = {3, 5, 6, 9, 10, 11};
 
 void setup(){
-  Serial.begin(SERIAL_RATE);
+  Serial.begin(BAUD_RATE);
 
   while (!Serial) {
     ; // wait for serial port to connect. Needed for native USB
@@ -48,7 +48,7 @@ void loop(){
   String strPiezoPin, strPiezoVal, strSerialMsg="";
 
   for(short i=0; i<NUM_PIEZOS; ++i) {
-    piezoPin = piezoPinsArray[i]
+    piezoPin = piezoPinsArray[i];
     piezoVal = analogRead(piezoPin);
     strPiezoPin = String(piezoPin);
     strPiezoVal = String(piezoVal);
