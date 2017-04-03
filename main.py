@@ -76,7 +76,11 @@ def main():
 
             for pin in PINS:
                 # initialize vel object
-                msg_recvd = msgs_recvd[pin + 1]
+                # the value read at the port has the following format:
+                # str - ",0:zxc,0:403,1:321,2:313,3:0,4:121,5:191,x"
+                # list - ['','0:\xff','0:403','1:321','2:313','3:0','4:121','5:191','x\r\n']
+                # hence the actual data starts at msgs_recvd[pin+2]
+                msg_recvd = msgs_recvd[pin + 2]
                 val = get_pin_val(msg_recvd)
                 vel_obj[pin] = Velocity(pin, val)
                 
