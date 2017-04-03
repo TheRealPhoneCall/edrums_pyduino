@@ -67,7 +67,7 @@ def midi_track(cmd, note, velocity, timedelta):
 def main():
     try:
         while True:
-            vel_obj = []
+            vel_obj = [None for pin in PINS]
             # read serial first
             msgs_recvd = serial_recv(ser)
             print msgs_recvd
