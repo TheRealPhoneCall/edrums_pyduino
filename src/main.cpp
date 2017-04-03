@@ -62,5 +62,6 @@ void loop(){
   }
   strSerialMsg = strSerialMsg + ",x";
   Serial.println(strSerialMsg);
+  strSerialMsg = "";
   delay(10);
 }
