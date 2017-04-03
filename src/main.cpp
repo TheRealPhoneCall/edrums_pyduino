@@ -16,7 +16,7 @@
 
 */
 
-include "Arduino.h"
+#include "Arduino.h"
 
 #define NUM_PIEZOS 6 //nano can be 8, mega can be 16
 
