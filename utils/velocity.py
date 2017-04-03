@@ -4,7 +4,7 @@ from .utils import map
 class Velocity(object):
     def __init__(self, pin, val):
         self.pin = pin
-        self.val = val
+        self.val = map(val, 0, 1023, self.threshold, MAX_VELOCITY)
         self.threshold = THRESHOLD[pin]
         self.velocity = None
         self.max_velocity = MAX_VELOCITY

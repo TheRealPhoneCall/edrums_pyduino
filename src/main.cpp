@@ -45,9 +45,13 @@ void setup(){
 
 void loop(){  
   unsigned short piezoPin, piezoVal;
-  String strPiezoPin, strPiezoVal, strSerialMsg="";
+  String strPiezoPin, strPiezoVal, strSerialMsg;
+
+  // initialize strSerialMsg
+  strSerialMsg = "";
 
   for(short i=0; i<NUM_PIEZOS; ++i) {
+    // read the piezo pins
     piezoPin = piezoPinsArray[i];
     piezoVal = analogRead(piezoPin);
     strPiezoPin = String(piezoPin);
