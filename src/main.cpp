@@ -56,11 +56,9 @@ void loop(){
     piezoVal = analogRead(piezoPin);
     strPiezoPin = String(piezoPin);
     strPiezoVal = String(piezoVal);
-    if (strSerialMsg == "") {
-      strSerialMsg = strPiezoPin + ":" + strPiezoVal;
-    } else {
-      strSerialMsg = strSerialMsg + "," + strPiezoPin + ":" + strPiezoVal;
-    }
+
+    // concat the msg
+    strSerialMsg = strPiezoPin + ":" + strPiezoVal + ",";
   }
   Serial.println(strSerialMsg);
   delay(10);
