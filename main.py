@@ -8,9 +8,9 @@ from utils.velocity import *
 
 # initialize serial comms
 try:
-    ser = serial.Serial('/dev/ttyUSB0', 31250)
+    ser = serial.Serial('/dev/ttyUSB0', SERIAL_RATE)
 except:
-    ser = serial.Serial('COM5', 31250)
+    ser = serial.Serial('COM5', SERIAL_RATE)
 print "Starting serial communication."
 print ser
 
@@ -70,6 +70,7 @@ def main():
             vel_obj = []
             # read serial first
             msgs_recvd = serial_recv(ser)
+            print msgs_recvd
             msgs_recvd = get_msgs_recvd(msgs_recvd)
             print msgs_recvd
 
