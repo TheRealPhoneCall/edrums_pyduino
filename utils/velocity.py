@@ -35,7 +35,6 @@ class Velocity(object):
             self.peak = self.peak
             return False
 
-
     def is_max_peak_reached(self, val):
         previous_peak = self.peak
         current_peak = val
@@ -47,9 +46,6 @@ class Velocity(object):
         else:
             self.max_peak = self.max_peak
             return False
-
-    def update_values(self):
-        self.val = 
 
     def velocity(self):
         velocity = self.max_peak

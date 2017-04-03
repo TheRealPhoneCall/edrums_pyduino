@@ -85,7 +85,7 @@ def main():
                     if vel_obj[pin].is_triggered(val): 
                         # if above threshold, find the peak
                         if vel_obj[pin].is_peak_reached():
-                            vel_obj[pin].update_values(val) 
+                            # vel_obj[pin].update_values(val) 
 
                             # if the peak is reached, check whether this peak
                             # is the max peak of the sensor
