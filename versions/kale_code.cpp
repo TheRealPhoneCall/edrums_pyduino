@@ -41,8 +41,8 @@
 #define KICK_NOTE 75
 
 //MIDI defines
-#define NOTE_ON_CMD 0x90
-#define NOTE_OFF_CMD 0x80
+#define NOTE_ON_CMD 90
+#define NOTE_OFF_CMD 80
 #define MAX_MIDI_VELOCITY 127
 
 //MIDI baud rate
@@ -79,16 +79,18 @@ unsigned long lastNoteTime[NUM_PIEZOS];
 
 void midiNoteOn(byte note, byte midiVelocity)
 {
-  Serial.write(NOTE_ON_CMD);
-  Serial.write(note);
-  Serial.write(midiVelocity);
+  String strNoteOnCmd = String(NOTE_ON_CMD);  
+  String strNote = String(note);  
+  String strVelocity = String(midiVelocity);
+  Serial.println(strNoteOnCmd + "." + strNote + "." + strVelocity);
 }
 
 void midiNoteOff(byte note, byte midiVelocity)
 {
-  Serial.write(NOTE_OFF_CMD);
-  Serial.write(note);
-  Serial.write(midiVelocity);
+  String strNoteOnCmd = String(NOTE_OFF_CMD);  
+  String strNote = String(note);  
+  String strVelocity = String(midiVelocity);
+  Serial.println(strNoteOnCmd + "." + strNote + "." + strVelocity);
 }
 
 void noteFire(unsigned short note, unsigned short velocity)
