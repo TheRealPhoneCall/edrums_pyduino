@@ -83,6 +83,7 @@ def main():
                 msg_recvd = msgs_recvd[pin + 2]
                 val = get_pin_val(msg_recvd)
                 vel_obj[pin] = Velocity(pin, val)
+                print vel_obj[pin]
                 
                 # keep reading until the peak is reached
                 max_peak_is_reached = False
