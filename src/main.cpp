@@ -60,6 +60,7 @@ void loop(){
     // concat the msg
     strSerialMsg = strSerialMsg + "," + strPiezoPin + ":" + strPiezoVal;
   }
+  strSerialMsg = strSerialMsg + ",x";
   Serial.println(strSerialMsg);
   delay(10);
 }
