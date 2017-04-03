@@ -101,7 +101,7 @@ def main():
                                 # velocity calculated from the loop
                                 max_peak_is_reached = True
                                 note = NOTES[pin]
-                                velocity = vel_obj[pin].velocity()
+                                velocity = vel_obj[pin].get_current_velocity(val)
                                 fire_note(pin, note, velocity)
                                 break
                             else:
