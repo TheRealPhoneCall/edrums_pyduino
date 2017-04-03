@@ -1,11 +1,5 @@
-from .settings import (
-    NUM_PIEZOS, DEFAULT_PADS, DEFAULT_PINS, 
-    DEFAULT_NOTES, DEFAULT_THRESHOLDS
-
-    NOTE_ON, NOTE_OFF, MAX_VELOCITY,     
-)
-
-from .utils import map
+from utils.settings import *
+from utils.utils import map
 
 class Velocity(object):
     def __init__(self, pin, val):

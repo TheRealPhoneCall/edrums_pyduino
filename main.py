@@ -1,5 +1,8 @@
 import serial
 import time
+
+from utils.settings import *
+
 try:
     ser = serial.Serial('/dev/ttyUSB0', 31250)
 except:
