@@ -16,6 +16,8 @@
 
 */
 
+include "Arduino.h"
+
 #define NUM_PIEZOS 6 //nano can be 8, mega can be 16
 
 // Initialize serial comm values 
@@ -36,7 +38,7 @@ void setup(){
   }
   
   for(short i=0; i<NUM_PIEZOS; ++i){
-    pinMode(piezoPinsArray[i], INPUT)
+    pinMode(piezoPinsArray[i], INPUT);
     pinMode(ledPinsArray[i], OUTPUT);
   }
 }
