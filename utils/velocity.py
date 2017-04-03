@@ -38,7 +38,7 @@ class Velocity(object):
 
     def is_max_peak_reached(self, val):
         previous_peak = self.peak
-        current_peak = peak
+        current_peak = val
 
         # if the piezo peak is dropping, means the max peak is reached
         if current_peak >= previous_peak:
@@ -48,8 +48,8 @@ class Velocity(object):
             self.max_peak = self.max_peak
             return False
 
-    def update_values(self, val):
-        pass
+    def update_values(self):
+        self.val = 
 
     def velocity(self):
         velocity = self.max_peak
