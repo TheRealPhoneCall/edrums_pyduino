@@ -76,7 +76,7 @@ def main():
 
             for pin in PINS:
                 # initialize vel object
-                msg_recvd = msgs_recvd[pin]
+                msg_recvd = msgs_recvd[pin + 1]
                 val = get_pin_val(msg_recvd)
                 vel_obj[pin] = Velocity(pin, val)
                 
