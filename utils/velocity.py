@@ -1,5 +1,5 @@
-from utils.settings import *
-from utils.utils import map
+from .settings import *
+from .utils import map
 
 class Velocity(object):
     def __init__(self, pin, val):
