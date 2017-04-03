@@ -58,7 +58,7 @@ void loop(){
     strPiezoVal = String(piezoVal);
 
     // concat the msg
-    strSerialMsg = strPiezoPin + ":" + strPiezoVal + ",";
+    strSerialMsg = strSerialMsg + "," + strPiezoPin + ":" + strPiezoVal;
   }
   Serial.println(strSerialMsg);
   delay(10);
