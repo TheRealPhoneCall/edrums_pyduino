@@ -1,5 +1,7 @@
 import serial
 import time
+import pygame.midi
+from mido import Message, MidiFile, MidiTrack
 
 from utils.settings import *
 from utils.velocity import *
