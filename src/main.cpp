@@ -55,7 +55,7 @@ void loop(){
     if (strSerialMsg == "") {
       strSerialMsg = strPiezoPin + ":" + strPiezoVal;
     } else {
-      strSerialMsg = strSerialMsg + "," strPiezoPin + ":" + strPiezoVal;
+      strSerialMsg = strSerialMsg + "," + strPiezoPin + ":" + strPiezoVal;
     }
   }
   Serial.println(strSerialMsg);
