@@ -58,11 +58,11 @@ def fire_note(pin, note, velocity):
 
     # play note off
     timedelta=timedelta + TIME_DIFF
-    midi_track('note_on', note, velocity, timedelta)
+    midi_track('note_off', note, velocity, timedelta)
     player.note_off(note, velocity)
 
 def midi_track(cmd, note, velocity, timedelta):    
-    track.append(Message(cmd, note, velocity, timedelta))
+    track.append(Message(cmd, note=note, velocity=velocity, time=timedelta))
 
 def main():
     try:
