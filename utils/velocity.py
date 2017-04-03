@@ -7,7 +7,7 @@ class Velocity(object):
         self.threshold = THRESHOLDS[pin]
         self.max_velocity = MAX_VELOCITY
         self.val = map(val, 0, 1023, self.threshold, self.max_velocity)
-        self.velocity = None
+        self.velocity = self.val
         self.peak = None
         self.max_peak = None
 
@@ -48,8 +48,8 @@ class Velocity(object):
             return False
 
     def velocity(self):
-        velocity = self.max_peak
-        return self.get_current_velocity(velocity)
+        self.velocity = self.max_peak
+        return self.get_current_velocity(self.velocity)
 
     def __str__(self):
-        return "piezo #%s velocity - %d" 
+        return "piezo #%s velocity - %d" %(self.pin, self.val)
