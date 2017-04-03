@@ -54,7 +54,7 @@ def fire_note(pin, note, velocity):
     midi_track('note_on', note, velocity, timedelta)
     player.note_on(note, velocity)
 
-    time.sleep(time_diff)
+    time.sleep(TIME_DIFF)
 
     # play note off
     timedelta=timedelta + TIME_DIFF
