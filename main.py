@@ -52,7 +52,6 @@ def main():
                     else:
                         if vel_obj[pin].is_peak_reached():
                             vel_obj[pin].update_values(val) 
-                        else:
 
                         max_peak_is_reached = False
                     
