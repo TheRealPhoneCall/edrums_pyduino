@@ -83,6 +83,7 @@ def main():
                 msg_recvd = msgs_recvd[pin + 2]
                 val = get_pin_val(msg_recvd)
                 vel_obj[pin] = Velocity(pin, val)
+                vel_obj = vel_obj[pin]
                 print vel_obj[pin]
                 
                 # keep reading until the peak is reached
@@ -90,19 +91,19 @@ def main():
                 while not max_peak_is_reached:
                     val = get_pin_val(msg_recvd) 
                     
-                    if vel_obj[pin].is_triggered(): 
+                    if vel_obj.is_triggered(): 
                         # if above threshold, find the peak
-                        if vel_obj[pin].is_peak_reached(val):
-                            # vel_obj[pin].update_values(val) 
+                        if vel_obj.is_peak_reached(val):
+                            # vel_obj.update_values(val) 
 
                             # if the peak is reached, check whether this peak
                             # is the max peak of the sensor
-                            if vel_obj[pin].is_max_peak_reached(val):
+                            if vel_obj.is_max_peak_reached(val):
                                 # if it is, the note is fired, with the 
                                 # velocity calculated from the loop
                                 max_peak_is_reached = True
                                 note = NOTES[pin]
-                                velocity = vel_obj[pin].velocity()
+                                velocity = vel_obj.velocity()
                                 fire_note(pin, note, velocity)
                                 break
                             else:
