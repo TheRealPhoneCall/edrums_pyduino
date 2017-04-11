@@ -1,264 +1,226 @@
 /*
-	Pyduino MIDI Drums
+ * Copyright (c) 2015 Evan Kale
+ * Email: EvanKale91@gmail.com
+ * Website: www.ISeeDeadPixel.com
+ *          www.evankale.blogspot.ca
+ *
+ * This file is part of ArduinoMidiDrums.
+ *
+ * ArduinoMidiDrums is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
-	An arduino MIDI drum project that is configurable with python.
-  This is primarily benchmarked to communicate with the raspberry pi.
-  This program assumes the Arduino Uno is used, with 6 analog inputs.
-  If other boards are used, you can set the size of the program variables'
-  arrays to be equal to how many analog inputs the board can take.
+//Piezo defines
+#define NUM_PIEZOS 6
+#define SNARE_THRESHOLD 30     //anything < TRIGGER_THRESHOLD is treated as 0
+#define LTOM_THRESHOLD 30
+#define RTOM_THRESHOLD 30
+#define LCYM_THRESHOLD 30
+#define RCYM_THRESHOLD 30
+#define KICK_THRESHOLD 30
+#define START_SLOT 0     //first analog slot of piezos
 
-	The circuit:
-	* piezo sensors to input drum signals
-	* serial communication to the raspberry pi.
+//MIDI note defines for each trigger
+#define SNARE_NOTE 70
+#define LTOM_NOTE 71
+#define RTOM_NOTE 72
+#define LCYM_NOTE 73
+#define RCYM_NOTE 74
+#define KICK_NOTE 75
 
-	Created 25/03/2017
-	By Daryl Pongcol
+//MIDI defines
+#define NOTE_ON_CMD 0x90
+#define NOTE_OFF_CMD 0x80
+#define MAX_MIDI_VELOCITY 127
 
-*/
-#include "Arduino.h"
+//MIDI baud rate
+#define SERIAL_RATE 115200
 
-// Define number of piezos
-#define NUM_PIEZOS 6 //nano can be 8, mega can be 16
+//Program defines
+//ALL TIME MEASURED IN MILLISECONDS
+#define SIGNAL_BUFFER_SIZE 100
+#define PEAK_BUFFER_SIZE 30
+#define MAX_TIME_BETWEEN_PEAKS 20
+#define MIN_TIME_BETWEEN_NOTES 50
 
-// Initialize serial comm values 
-unsigned long BAUD_RATE=9600;
-unsigned long TIME_OUT=1000;
+//map that holds the mux slots of the piezos
+unsigned short slotMap[NUM_PIEZOS];
 
-// Initialize midi values
-#define NOTE_ON 0x90
-#define NOTE_OFF 0x80
-#define MAX_VELOCITY 127
+//map that holds the respective note to each piezo
+unsigned short noteMap[NUM_PIEZOS];
 
-// Initialize config arrays, their default values are set in the next block
-unsigned short ledPinsArray[NUM_PIEZOS];
-unsigned short piezoPinsArray[NUM_PIEZOS]; 
-unsigned int thresholdArray[NUM_PIEZOS]; 
-unsigned int noteArray[NUM_PIEZOS];
+//map that holds the respective threshold to each piezo
+unsigned short thresholdMap[NUM_PIEZOS];
 
-// Intialize machine state and config values
-unsigned short state = 0; // 0 for play state
-                          // 1 for configure state
-unsigned int configMatrix[5][NUM_PIEZOS] = {};
-char drumPadArray[] = {'SNARE', 'LTOM', 'RTOM', 'LCYM', 'RCYM', 'KICK'};
-unsigned int defaultConfigMatrix[5][6] = {
-  {BAUD_RATE, TIME_OUT, NOTE_ON, NOTE_OFF, MAX_VELOCITY, 0}, // main defaults
-  // Array daults. Order: { Snare, LTom, RTom, LCym, RCym, Kick }
-  {3, 5, 6, 9, 10, 11},       //ledPinsArray - PWM pins
-  {0, 1, 2, 3, 4, 5},         //piezoPinsArray - piezo analog input pins
-  {30, 30, 30, 100, 100, 50}, //thresholdArray - anything less than these
-                              //                 values are considered zero
-  {70, 71, 72, 73, 74, 75}    //noteArray - Snare, LTom, RTom, LCym, RCym, Kick notes 
-};
+//Ring buffers to store analog signal and peaks
+short currentSignalIndex[NUM_PIEZOS];
+short currentPeakIndex[NUM_PIEZOS];
+unsigned short signalBuffer[NUM_PIEZOS][SIGNAL_BUFFER_SIZE];
+unsigned short peakBuffer[NUM_PIEZOS][PEAK_BUFFER_SIZE];
 
+boolean noteReady[NUM_PIEZOS];
+unsigned short noteReadyVelocity[NUM_PIEZOS];
+boolean isLastPeakZeroed[NUM_PIEZOS];
 
-/* SETUP Subroutines */
-void setupInitialValues(){
-  // setup config values with config defaults
-  for (short i=0; i<NUM_PIEZOS; i++){
-    if (i<6){
-      // setup config matrix data
-      configMatrix[0][i] = defaultConfigMatrix[0][i];
-      configMatrix[1][i] = defaultConfigMatrix[1][i];
-      configMatrix[2][i] = defaultConfigMatrix[2][i];
-      configMatrix[3][i] = defaultConfigMatrix[3][i];
-      configMatrix[4][i] = defaultConfigMatrix[4][i];
-      
-      // setup array values data
-      ledPinsArray[i] = configMatrix[1][i];
-      piezoPinsArray[i] = configMatrix[2][i];
-      thresholdArray[i] = configMatrix[3][i];
-      noteArray[i] = configMatrix[4][i];
-    } else {
-      // set to zero those that exceeds the number of piezos
-      configMatrix[0][i] = 0;
-      configMatrix[1][i] = 0;
-      configMatrix[2][i] = 0;
-      configMatrix[3][i] = 0;
-      configMatrix[4][i] = 0;
-    }
-    
-  }
+unsigned long lastPeakTime[NUM_PIEZOS];
+unsigned long lastNoteTime[NUM_PIEZOS];
 
-  // setup main defaults
-  BAUD_RATE = configMatrix[0][0];
-  TIME_OUT = configMatrix[0][1];
-  NOTE_ON = configMatrix[0][2];
-  NOTE_OFF = configMatrix[0][3];
-  MAX_VELOCITY = configMatrix[0][4];
-
-  // setup analog output pins
-  for (short i=0; i<NUM_PIEZOS; i++){
-    pinMode(ledPinsArray, OUTPUT);
-  }
-}
-
-void setup(){
-  Serial.begin(BAUD_RATE);
-
-  // wait for serial to become active
-  while (!Serial){
-    // do nothing
-    // just wait for the serial to be live
-  } 
-
-  // setup device's initial values
-  setupInitialValues();
-
-  // Serial comm setup
-  Serial.setTimeout(TIME_OUT);
-  Serial.println("Starting");
-}
-
-/* LOOP Subroutines */
-String getStringPartByNr(String data, char separator, int index)
+void setup()
 {
-    // spliting a string and return the part nr index
-    // split by separator
-    
-    int stringData = 0;        //variable to count data part nr 
-    String dataPart = "";      //variable to hole the return text
-    
-    for(int i = 0; i<data.length()-1; i++) {    //Walk through the text one letter at a time
-      
-      if(data[i]==separator) {
-        //Count the number of times separator character appears in the text
-        stringData++;
-        
-      }else if(stringData==index) {
-        //get the text when separator is the rignt one
-        dataPart.concat(data[i]);
-        
-      }else if(stringData>index) {
-        //return text and stop if the next separator appears - to save CPU-time
-        Serial.println(dataPart);
-        return dataPart;
-        break;
-        
-      }
-
-    }
-    //return text if this is the last part
-    Serial.println(dataPart);
-    return dataPart;
-}
-
-void updateConfigValues(String configMatrix0, String configMatrix1, String configMatrix2,
-                        String configMatrix3, String configMatrix4){
-  configMatrix[0][0] = getStringPartByNr(configMatrix0, ",", 0).toInt();
-  configMatrix[0][1] = getStringPartByNr(configMatrix0, ",", 1).toInt();
-  configMatrix[0][2] = getStringPartByNr(configMatrix0, ",", 2).toInt();
-  configMatrix[0][3] = getStringPartByNr(configMatrix0, ",", 3).toInt();
-  configMatrix[0][4] = getStringPartByNr(configMatrix0, ",", 4).toInt();
-
-  // setup main defaults
-  BAUD_RATE = configMatrix[0][0];
-  TIME_OUT = configMatrix[0][1];
-  NOTE_ON = configMatrix[0][2];
-  NOTE_OFF = configMatrix[0][3];
-  MAX_VELOCITY = configMatrix[0][4];
-
-  // setup config values with config defaults
-  for (short i=0; i<NUM_PIEZOS; i++){
-    if (i<6){
-      // setup config matrix data
-      configMatrix[1][i] = getStringPartByNr(configMatrix1, ",", i).toInt();
-      configMatrix[2][i] = getStringPartByNr(configMatrix2, ",", i).toInt();
-      configMatrix[3][i] = getStringPartByNr(configMatrix3, ",", i).toInt();
-      configMatrix[4][i] = getStringPartByNr(configMatrix4, ",", i).toInt();
-      
-      // setup array values data
-      ledPinsArray[i] = configMatrix[1][i];
-      piezoPinsArray[i] = configMatrix[2][i];
-      thresholdArray[i] = configMatrix[3][i];
-      noteArray[i] = configMatrix[4][i];
-    } else {
-      // set to zero those that exceeds the number of piezos
-      configMatrix[0][i] = 0;
-      configMatrix[1][i] = 0;
-      configMatrix[2][i] = 0;
-      configMatrix[3][i] = 0;
-      configMatrix[4][i] = 0;
-    }
-    
-  }
-
-}
-
-void setDeviceValues(String serialData){
-  // Get the array parts of the serialData
-  String configMatrix0 = getStringPartByNr(serialData, "},{", 0);  
-  String configMatrix1 = getStringPartByNr(serialData, "},{", 1);
-  String configMatrix2 = getStringPartByNr(serialData, "},{", 2);
-  String configMatrix3 = getStringPartByNr(serialData, "},{", 3);
-  String configMatrix4 = getStringPartByNr(serialData, "},{", 4);
-
-  // Remove the inner and outer brackers - {{  }} of the start/end 
-  // of the serial data
-  // configMatrix0 = configMatrix0.replace("{{", "");
-  // configMatrix4 = configMatrix4.replace("}}", "");
-
-  // Update the config values:
-  updateConfigValues(configMatrix0, configMatrix1, configMatrix2, 
-                     configMatrix3, configMatrix4);
-}
-
-//send MIDI message
-void sendMidiMsg(char drumPad, byte command, byte note, byte velocity) {
-  String strDrumPad = String(drumPad);
-  String strNoteOnCmd = String(command);  
-  String strNote = String(note);  
-  String strVelocity = String(velocity);
-  Serial.println(strDrumPad + ": " + strNoteOnCmd + "." + strNote + "." + strVelocity);
-}
-
-int getMaxVal(int lastVal, int piezoPin){
-  int currentVal = analogRead(piezoPin);
-  while (currentVal>lastVal){
-    lastVal = currentVal;
-    currentVal = analogRead(piezoPin);
-  }
-  return lastVal;
-}
-
-void drumRoutine(){
-  int piezoPin, piezoVal, threshold;
-  for (short i; i<NUM_PIEZOS; i++){
-    piezoPin = piezoPinsArray[i];
-    piezoVal = analogRead(piezoPin);
-    threshold = thresholdArray[i];
-    // Check if the piezo passes threshold voltage
-    if (piezoVal>threshold){
-      byte noteOn = NOTE_ON;
-      byte noteMidi = noteArray[i];
-      char drumPad = drumPadArray[i];    
-
-      // Get max piezoValue 
-      int maxPiezoVal = getMaxVal(piezoVal, piezoPin);
-      int velocity = map(maxPiezoVal, 0, 1023, threshold, 300); //300 has to be peak
-                                                 //velocity between 50 and 127 
-                                                 //based on max val from piezo
-      
-      sendMidiMsg(drumPad, noteOn, noteMidi, velocity);
-      delay(500);
-      sendMidiMsg(drumPad, noteOn, noteMidi, 0);
-    }
+  Serial.begin(SERIAL_RATE);
+  
+  //initialize globals
+  for(short i=0; i<NUM_PIEZOS; ++i)
+  {
+    currentSignalIndex[i] = 0;
+    currentPeakIndex[i] = 0;
+    memset(signalBuffer[i],0,sizeof(signalBuffer[i]));
+    memset(peakBuffer[i],0,sizeof(peakBuffer[i]));
+    noteReady[i] = false;
+    noteReadyVelocity[i] = 0;
+    isLastPeakZeroed[i] = true;
+    lastPeakTime[i] = 0;
+    lastNoteTime[i] = 0;    
+    slotMap[i] = START_SLOT + i;
   }
   
+  thresholdMap[0] = KICK_THRESHOLD;
+  thresholdMap[1] = RTOM_THRESHOLD;
+  thresholdMap[2] = RCYM_THRESHOLD;
+  thresholdMap[3] = LCYM_THRESHOLD;
+  thresholdMap[4] = SNARE_THRESHOLD;
+  thresholdMap[5] = LTOM_THRESHOLD;  
+  
+  noteMap[0] = KICK_NOTE;
+  noteMap[1] = RTOM_NOTE;
+  noteMap[2] = RCYM_NOTE;
+  noteMap[3] = LCYM_NOTE;
+  noteMap[4] = SNARE_NOTE;
+  noteMap[5] = LTOM_NOTE;  
 }
 
-void loop(){
-  // Check which state the current program runs
-  // if (Serial.available()) {
-  //   // state = 1;
-  //   Serial.println("Initiating configuaration setup routine...");
-  //   String serialData = Serial.readStringUntil("}}");
-  //   setDeviceValues(serialData);
-  //   Serial.println("Configuration updated.");
-  //   state = 0;
-  //   drumRoutine();
-  // } else {
-  //   // state = 0;
-  //   drumRoutine();
-  // }
-  drumRoutine();
+void midiNoteOn(byte note, byte midiVelocity)
+{
+  Serial.write(NOTE_ON_CMD);
+  Serial.write(note);
+  Serial.write(midiVelocity);
 }
+
+void midiNoteOff(byte note, byte midiVelocity)
+{
+  Serial.write(NOTE_OFF_CMD);
+  Serial.write(note);
+  Serial.write(midiVelocity);
+}
+
+void noteFire(unsigned short note, unsigned short velocity)
+{
+  if(velocity > MAX_MIDI_VELOCITY)
+    velocity = MAX_MIDI_VELOCITY;
+  
+  midiNoteOn(note, velocity);
+  midiNoteOff(note, velocity);
+}
+
+void recordNewPeak(short slot, short newPeak)
+{
+  isLastPeakZeroed[slot] = (newPeak == 0);
+  
+  unsigned long currentTime = millis();
+  lastPeakTime[slot] = currentTime;
+  
+  //new peak recorded (newPeak)
+  peakBuffer[slot][currentPeakIndex[slot]] = newPeak;
+  
+  //1 of 3 cases can happen:
+  // 1) note ready - if new peak >= previous peak
+  // 2) note fire - if new peak < previous peak and previous peak was a note ready
+  // 3) no note - if new peak < previous peak and previous peak was NOT note ready
+  
+  //get previous peak
+  short prevPeakIndex = currentPeakIndex[slot]-1;
+  if(prevPeakIndex < 0) prevPeakIndex = PEAK_BUFFER_SIZE-1;        
+  unsigned short prevPeak = peakBuffer[slot][prevPeakIndex];
+   
+  if(newPeak > prevPeak && (currentTime - lastNoteTime[slot])>MIN_TIME_BETWEEN_NOTES)
+  {
+    noteReady[slot] = true;
+    if(newPeak > noteReadyVelocity[slot])
+      noteReadyVelocity[slot] = newPeak;
+  }
+  else if(newPeak < prevPeak && noteReady[slot])
+  {
+    noteFire(noteMap[slot], noteReadyVelocity[slot]);
+    noteReady[slot] = false;
+    noteReadyVelocity[slot] = 0;
+    lastNoteTime[slot] = currentTime;
+  }
+  
+  currentPeakIndex[slot]++;
+  if(currentPeakIndex[slot] == PEAK_BUFFER_SIZE) currentPeakIndex[slot] = 0;  
+}
+
+void loop()
+{
+  unsigned long currentTime = millis();
+  
+  for(short i=0; i<NUM_PIEZOS; ++i)
+  {
+    //get a new signal from analog read
+    unsigned short newSignal = analogRead(slotMap[i]);
+    signalBuffer[i][currentSignalIndex[i]] = newSignal;
+    
+    //if new signal is 0
+    if(newSignal < thresholdMap[i])
+    {
+      if(!isLastPeakZeroed[i] && (currentTime - lastPeakTime[i]) > MAX_TIME_BETWEEN_PEAKS)
+      {
+        recordNewPeak(i,0);
+      }
+      else
+      {
+        //get previous signal
+        short prevSignalIndex = currentSignalIndex[i]-1;
+        if(prevSignalIndex < 0) prevSignalIndex = SIGNAL_BUFFER_SIZE-1;        
+        unsigned short prevSignal = signalBuffer[i][prevSignalIndex];
+        
+        unsigned short newPeak = 0;
+        
+        //find the wave peak if previous signal was not 0 by going
+        //through previous signal values until another 0 is reached
+        while(prevSignal >= thresholdMap[i])
+        {
+          if(signalBuffer[i][prevSignalIndex] > newPeak)
+          {
+            newPeak = signalBuffer[i][prevSignalIndex];        
+          }
+          
+          //decrement previous signal index, and get previous signal
+          prevSignalIndex--;
+          if(prevSignalIndex < 0) prevSignalIndex = SIGNAL_BUFFER_SIZE-1;
+          prevSignal = signalBuffer[i][prevSignalIndex];
+        }
+        
+        if(newPeak > 0)
+        {
+          recordNewPeak(i, newPeak);
+        }
+      }
+  
+    }
+        
+    currentSignalIndex[i]++;
+    if(currentSignalIndex[i] == SIGNAL_BUFFER_SIZE) currentSignalIndex[i] = 0;
+  }
+}
+
