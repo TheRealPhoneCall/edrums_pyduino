@@ -27,8 +27,8 @@ unsigned long TIME_OUT=1000;
 // Initialize config arrays, their default values are 
 // set in the next block
 char drumPadArray[] = {'SNARE', 'LTOM', 'RTOM', 'LCYM', 'RCYM', 'KICK'};
-unsigned short ledPinsArray[NUM_PIEZOS] = {0, 1, 2, 3, 4, 5};
-unsigned short piezoPinsArray[NUM_PIEZOS] = {3, 5, 6, 9, 10, 11};
+unsigned short ledPinsArray[NUM_PIEZOS] = {3, 5, 6, 9, 10, 11};
+unsigned short piezoPinsArray[NUM_PIEZOS] = {0, 1, 2, 3, 4, 5};
 
 void setup(){
   Serial.begin(BAUD_RATE);
@@ -45,19 +45,23 @@ void setup(){
 
 void loop(){  
   unsigned short piezoPin, piezoVal;
-  String strPiezoPin, strPiezoVal, strSerialMsg="";
+  String strPiezoPin, strPiezoVal, strSerialMsg;
+
+  // initialize strSerialMsg
+  strSerialMsg = "";
 
   for(short i=0; i<NUM_PIEZOS; ++i) {
+    // read the piezo pins
     piezoPin = piezoPinsArray[i];
     piezoVal = analogRead(piezoPin);
     strPiezoPin = String(piezoPin);
     strPiezoVal = String(piezoVal);
-    if (strSerialMsg == "") {
-      strSerialMsg = strPiezoPin + ":" + strPiezoVal;
-    } else {
-      strSerialMsg = strSerialMsg + "," + strPiezoPin + ":" + strPiezoVal;
-    }
+
+    // concat the msg
+    strSerialMsg = strSerialMsg + "," + strPiezoPin + ":" + strPiezoVal;
   }
+  strSerialMsg = strSerialMsg + ",x";
   Serial.println(strSerialMsg);
+  strSerialMsg = "";
   delay(10);
 }

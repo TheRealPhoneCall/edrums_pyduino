@@ -1,4 +1,4 @@
-c:\Users\Lenovo\Documents\_BERDWARE\7.0_BerDrums\_testing\.build\main.cpp\core\CDC.cpp.o: \
+c:\Users\Lenovo\Documents\_BERDWARE\7.0_BerDrums\version_pyduino\.build\main.cpp\core\CDC.cpp.o: \
  C:\Program\ Files\ (x86)\Arduino\hardware\arduino\avr\cores\arduino\CDC.cpp \
  C:\Program\ Files\ (x86)\Arduino\hardware\arduino\avr\cores\arduino\USBAPI.h \
  C:\Program\ Files\ (x86)\Arduino\hardware\arduino\avr\cores\arduino\Arduino.h \

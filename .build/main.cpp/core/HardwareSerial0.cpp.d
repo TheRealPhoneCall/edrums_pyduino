@@ -1,4 +1,4 @@
-c:\Users\Lenovo\Documents\_BERDWARE\7.0_BerDrums\_testing\.build\main.cpp\core\HardwareSerial0.cpp.o: \
+c:\Users\Lenovo\Documents\_BERDWARE\7.0_BerDrums\version_pyduino\.build\main.cpp\core\HardwareSerial0.cpp.o: \
  C:\Program\ Files\ (x86)\Arduino\hardware\arduino\avr\cores\arduino\HardwareSerial0.cpp \
  C:\Program\ Files\ (x86)\Arduino\hardware\arduino\avr\cores\arduino\Arduino.h \
  C:\Program\ Files\ (x86)\Arduino\hardware\arduino\avr\cores\arduino\binary.h \

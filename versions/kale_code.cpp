@@ -20,8 +20,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "Arduino.h"
-
 //Piezo defines
 #define NUM_PIEZOS 6
 #define SNARE_THRESHOLD 30     //anything < TRIGGER_THRESHOLD is treated as 0
@@ -41,8 +39,8 @@
 #define KICK_NOTE 75
 
 //MIDI defines
-#define NOTE_ON_CMD 90
-#define NOTE_OFF_CMD 80
+#define NOTE_ON_CMD 0x90
+#define NOTE_OFF_CMD 0x80
 #define MAX_MIDI_VELOCITY 127
 
 //MIDI baud rate
@@ -76,69 +74,6 @@ boolean isLastPeakZeroed[NUM_PIEZOS];
 
 unsigned long lastPeakTime[NUM_PIEZOS];
 unsigned long lastNoteTime[NUM_PIEZOS];
-
-void midiNoteOn(byte note, byte midiVelocity)
-{
-  String strNoteOnCmd = String(NOTE_ON_CMD);  
-  String strNote = String(note);  
-  String strVelocity = String(midiVelocity);
-  Serial.println(strNoteOnCmd + "." + strNote + "." + strVelocity);
-}
-
-void midiNoteOff(byte note, byte midiVelocity)
-{
-  String strNoteOnCmd = String(NOTE_OFF_CMD);  
-  String strNote = String(note);  
-  String strVelocity = String(midiVelocity);
-  Serial.println(strNoteOnCmd + "." + strNote + "." + strVelocity);
-}
-
-void noteFire(unsigned short note, unsigned short velocity)
-{
-  if(velocity > MAX_MIDI_VELOCITY)
-    velocity = MAX_MIDI_VELOCITY;
-  
-  midiNoteOn(note, velocity);
-  midiNoteOff(note, velocity);
-}
-
-void recordNewPeak(short slot, short newPeak)
-{
-  isLastPeakZeroed[slot] = (newPeak == 0);
-  
-  unsigned long currentTime = millis();
-  lastPeakTime[slot] = currentTime;
-  
-  //new peak recorded (newPeak)
-  peakBuffer[slot][currentPeakIndex[slot]] = newPeak;
-  
-  //1 of 3 cases can happen:
-  // 1) note ready - if new peak >= previous peak
-  // 2) note fire - if new peak < previous peak and previous peak was a note ready
-  // 3) no note - if new peak < previous peak and previous peak was NOT note ready
-  
-  //get previous peak
-  short prevPeakIndex = currentPeakIndex[slot]-1;
-  if(prevPeakIndex < 0) prevPeakIndex = PEAK_BUFFER_SIZE-1;        
-  unsigned short prevPeak = peakBuffer[slot][prevPeakIndex];
-   
-  if(newPeak > prevPeak && (currentTime - lastNoteTime[slot])>MIN_TIME_BETWEEN_NOTES)
-  {
-    noteReady[slot] = true;
-    if(newPeak > noteReadyVelocity[slot])
-      noteReadyVelocity[slot] = newPeak;
-  }
-  else if(newPeak < prevPeak && noteReady[slot])
-  {
-    noteFire(noteMap[slot], noteReadyVelocity[slot]);
-    noteReady[slot] = false;
-    noteReadyVelocity[slot] = 0;
-    lastNoteTime[slot] = currentTime;
-  }
-  
-  currentPeakIndex[slot]++;
-  if(currentPeakIndex[slot] == PEAK_BUFFER_SIZE) currentPeakIndex[slot] = 0;  
-}
 
 void setup()
 {
@@ -226,4 +161,65 @@ void loop()
     currentSignalIndex[i]++;
     if(currentSignalIndex[i] == SIGNAL_BUFFER_SIZE) currentSignalIndex[i] = 0;
   }
+}
+
+void recordNewPeak(short slot, short newPeak)
+{
+  isLastPeakZeroed[slot] = (newPeak == 0);
+  
+  unsigned long currentTime = millis();
+  lastPeakTime[slot] = currentTime;
+  
+  //new peak recorded (newPeak)
+  peakBuffer[slot][currentPeakIndex[slot]] = newPeak;
+  
+  //1 of 3 cases can happen:
+  // 1) note ready - if new peak >= previous peak
+  // 2) note fire - if new peak < previous peak and previous peak was a note ready
+  // 3) no note - if new peak < previous peak and previous peak was NOT note ready
+  
+  //get previous peak
+  short prevPeakIndex = currentPeakIndex[slot]-1;
+  if(prevPeakIndex < 0) prevPeakIndex = PEAK_BUFFER_SIZE-1;        
+  unsigned short prevPeak = peakBuffer[slot][prevPeakIndex];
+   
+  if(newPeak > prevPeak && (currentTime - lastNoteTime[slot])>MIN_TIME_BETWEEN_NOTES)
+  {
+    noteReady[slot] = true;
+    if(newPeak > noteReadyVelocity[slot])
+      noteReadyVelocity[slot] = newPeak;
+  }
+  else if(newPeak < prevPeak && noteReady[slot])
+  {
+    noteFire(noteMap[slot], noteReadyVelocity[slot]);
+    noteReady[slot] = false;
+    noteReadyVelocity[slot] = 0;
+    lastNoteTime[slot] = currentTime;
+  }
+  
+  currentPeakIndex[slot]++;
+  if(currentPeakIndex[slot] == PEAK_BUFFER_SIZE) currentPeakIndex[slot] = 0;  
+}
+
+void noteFire(unsigned short note, unsigned short velocity)
+{
+  if(velocity > MAX_MIDI_VELOCITY)
+    velocity = MAX_MIDI_VELOCITY;
+  
+  midiNoteOn(note, velocity);
+  midiNoteOff(note, velocity);
+}
+
+void midiNoteOn(byte note, byte midiVelocity)
+{
+  Serial.write(NOTE_ON_CMD);
+  Serial.write(note);
+  Serial.write(midiVelocity);
+}
+
+void midiNoteOff(byte note, byte midiVelocity)
+{
+  Serial.write(NOTE_OFF_CMD);
+  Serial.write(note);
+  Serial.write(midiVelocity);
 }

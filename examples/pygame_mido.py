@@ -1,12 +1,16 @@
 import serial
 import pygame.midi
+import pygame.mixer
 from mido import Message, MidiFile, MidiTrack
 
 import time
 from datetime import timedelta as timedelta
 
 # instantiate serial
-serial = serial.Serial('/dev/ttyUSB0', 9600)
+try:
+    serial = serial.Serial('/dev/ttyUSB0', 9600)
+except:
+    serial = serial.Serial('COM5', 9600)
 print "Starting serial communication."
 print serial
 
@@ -26,25 +30,57 @@ midi_msgs = []
 # instantiate pygame player
 pygame.midi.init()
 player = pygame.midi.Output(0)
-GRAND_PIANO = 0
-CHURCH_ORGAN = 19
-player.set_instrument(0)
+INSTRUMENT = {
+    'GRAND_PIANO': 0,
+    'CHURCH_ORGAN': 19,
+    'STEEL_DRUMS': 114,
+    'WOODBLOCK': 115,
+    'TAIKO_DRUMS': 116,
+    'MELODIC_DRUMS': 117,
+    'SYNTH_DRUMS': 120,
+    'REVERSE_CYMBAL': 121
+}
+player.set_instrument(35)
+
+class Drums(object):
+    
+    def __init__(self):
+        self.mixer = pygame.mixer
+        self.mixer.init(frequency=22050, size=-16, buffer=512)
+    
+    def play_snare(self):
+        snare = self.mixer.Sound('snare.wav')
+        snare.play(loops=0, maxtime=0, fade_ms=0)
+
+    def play_bass(self):
+        bass = self.mixer.Sound('bass.wav')
+        bass.play(loops=0, maxtime=0, fade_ms=0)
+
+    def play_cymbal(self):
+        cymbal = self.mixer.Sound('cymbal.wav')
+        cymbal.play(loops=0, maxtime=0, fade_ms=0)
+
 
 
 
 try:
+    drums = Drums()
     # loop through the midi messages received
     while True:
         # read the midi msg
         midi_read = serial.readline()
         midi_read = midi_read.split(".")
         current_time = time.time()
-        midi_msg = {
-            'note_cmd': 'note_on' if int(midi_read[0]) == 90 else 'note_off',
-            'note': int(midi_read[1]),
-            'velocity': int(midi_read[2]),
-            'timedelta': int(current_time-start_time)
-        }
+        if midi_read[0] != "Starting":
+            midi_msg = {
+                'note_cmd': 'note_on' if int(midi_read[0]) == 90 else 'note_off',
+                'note': int(midi_read[1]),
+                'velocity': int(midi_read[2]),
+                'timedelta': int(current_time-start_time)
+            }
+        else:
+            print "%s" %(midi_read[0])
+            continue
 
         # print and append midi msg
         print "reading midi:"
