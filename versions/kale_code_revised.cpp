@@ -27,9 +27,9 @@
 #define SNARE_THRESHOLD 30     //anything < TRIGGER_THRESHOLD is treated as 0
 #define LTOM_THRESHOLD 30
 #define RTOM_THRESHOLD 30
-#define LCYM_THRESHOLD 100
-#define RCYM_THRESHOLD 100
-#define KICK_THRESHOLD 50
+#define LCYM_THRESHOLD 30
+#define RCYM_THRESHOLD 30
+#define KICK_THRESHOLD 30
 #define START_SLOT 0     //first analog slot of piezos
 
 //MIDI note defines for each trigger
@@ -41,12 +41,12 @@
 #define KICK_NOTE 75
 
 //MIDI defines
-#define NOTE_ON_CMD 90
-#define NOTE_OFF_CMD 80
+#define NOTE_ON_CMD 0x90
+#define NOTE_OFF_CMD 0x80
 #define MAX_MIDI_VELOCITY 127
 
 //MIDI baud rate
-#define SERIAL_RATE 9600
+#define SERIAL_RATE 115200
 
 //Program defines
 //ALL TIME MEASURED IN MILLISECONDS
@@ -79,18 +79,16 @@ unsigned long lastNoteTime[NUM_PIEZOS];
 
 void midiNoteOn(byte note, byte midiVelocity)
 {
-  String strNoteOnCmd = String(NOTE_ON_CMD);  
-  String strNote = String(note);  
-  String strVelocity = String(midiVelocity);
-  Serial.println(strNoteOnCmd + "." + strNote + "." + strVelocity);
+    Serial.write(NOTE_ON_CMD);
+    Serial.write(note);
+    Serial.write(midiVelocity);
 }
 
 void midiNoteOff(byte note, byte midiVelocity)
 {
-  String strNoteOnCmd = String(NOTE_OFF_CMD);  
-  String strNote = String(note);  
-  String strVelocity = String(midiVelocity);
-  Serial.println(strNoteOnCmd + "." + strNote + "." + strVelocity);
+    Serial.write(NOTE_OFF_CMD);
+    Serial.write(note);
+    Serial.write(midiVelocity);
 }
 
 void noteFire(unsigned short note, unsigned short velocity)
@@ -182,6 +180,7 @@ void loop()
   {
     //get a new signal from analog read
     unsigned short newSignal = analogRead(slotMap[i]);
+    newSignal = map(newSignal, 100, 300, 0, 127);
     signalBuffer[i][currentSignalIndex[i]] = newSignal;
     
     //if new signal is 0

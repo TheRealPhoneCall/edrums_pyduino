@@ -6,8 +6,7 @@
 
 #include "Arduino.h"
 
-#define BAUD_RATE 115200
-#define NUM_PIEZOS 3
+#define NUM_PIEZOS 6
 
 void setup(){
   // initialize serial comms
@@ -24,5 +23,5 @@ void loop(){
   }
 
   // wait 
-  delay(10);
+  delay(5);
 }
