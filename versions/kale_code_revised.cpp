@@ -1,49 +1,71 @@
 /*
- * Copyright (c) 2015 Evan Kale
- * Email: EvanKale91@gmail.com
- * Website: www.ISeeDeadPixel.com
- *          www.evankale.blogspot.ca
- *
- * This file is part of ArduinoMidiDrums.
- *
- * ArduinoMidiDrums is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
+	Pyduino MIDI Drums
+
+	An arduino MIDI drum project that is configurable with python.
+  ------ more descriptions -------
+
+	The circuit:
+	* piezo sensors to input drum signals
+	* serial communication to the raspberry pi.
+
+	Created 25/03/2017
+	By Daryl Pongcol
+
+  Resources:
+    Main algorithm -  By Evan Kale
+    Another algorithm -  By NotesAndVolts.com
+
+*/
 
 #include "Arduino.h"
 
 //Piezo defines
 #define NUM_PIEZOS 6
-#define SNARE_THRESHOLD 30     //anything < TRIGGER_THRESHOLD is treated as 0
-#define LTOM_THRESHOLD 30
-#define RTOM_THRESHOLD 30
-#define LCYM_THRESHOLD 30
-#define RCYM_THRESHOLD 30
-#define KICK_THRESHOLD 30
 #define START_SLOT 0     //first analog slot of piezos
 
-//MIDI note defines for each trigger
-#define SNARE_NOTE 70
-#define LTOM_NOTE 71
-#define RTOM_NOTE 72
-#define LCYM_NOTE 73
-#define RCYM_NOTE 74
-#define KICK_NOTE 75
+//Pad defines
+// notes:
+#define PAD0_NOTE 72    //top left
+#define PAD1_NOTE 73    //top right
+#define PAD2_NOTE 70    //middle left
+#define PAD3_NOTE 71    //middle right
+#define PAD4_NOTE 75    //lower left
+#define PAD5_NOTE 74    //lower right
+// thresholds:
+#define PAD0_THRESHOLD 25    
+#define PAD1_THRESHOLD 25
+#define PAD2_THRESHOLD 20
+#define PAD3_THRESHOLD 40
+#define PAD4_THRESHOLD 20
+#define PAD5_THRESHOLD 20
+// min readings:
+#define PAD0_MIN 10   
+#define PAD1_MIN 10
+#define PAD2_MIN 0
+#define PAD3_MIN 10
+#define PAD4_MIN 0
+#define PAD5_MIN 0
+// max readings:
+#define PAD0_MAX 1024   
+#define PAD1_MAX 1024
+#define PAD2_MAX 900
+#define PAD3_MAX 400
+#define PAD4_MAX 800
+#define PAD5_MAX 800
+
+// special pads:
+#define KICK_PAD 2
+#define LTOM_PAD 3
+#define CYM_PAD 6
+#define SNARE1_PAD 0
+#define SNARE2_PAD 1 
 
 //MIDI defines
 #define NOTE_ON_CMD 0x90
 #define NOTE_OFF_CMD 0x80
 #define MAX_MIDI_VELOCITY 127
+#define DEFAULT_MIN_READING 0
+#define DEFAULT_MAX_READING 1024
 
 //MIDI baud rate
 #define SERIAL_RATE 115200
@@ -63,6 +85,10 @@ unsigned short noteMap[NUM_PIEZOS];
 
 //map that holds the respective threshold to each piezo
 unsigned short thresholdMap[NUM_PIEZOS];
+
+//map that holds the respective min & max reading to each piezo
+unsigned short minReadingMap[NUM_PIEZOS];
+unsigned short maxReadingMap[NUM_PIEZOS];
 
 //Ring buffers to store analog signal and peaks
 short currentSignalIndex[NUM_PIEZOS];
@@ -128,7 +154,10 @@ void recordNewPeak(short slot, short newPeak)
   }
   else if(newPeak < prevPeak && noteReady[slot])
   {
-    noteFire(noteMap[slot], noteReadyVelocity[slot]);
+    if (slot == LTOM_PAD)
+      noteFire(noteMap[slot], 2*noteReadyVelocity[slot]); //tom low velocity fix
+    else
+      noteFire(noteMap[slot], noteReadyVelocity[slot]);
     noteReady[slot] = false;
     noteReadyVelocity[slot] = 0;
     lastNoteTime[slot] = currentTime;
@@ -157,19 +186,33 @@ void setup()
     slotMap[i] = START_SLOT + i;
   }
   
-  thresholdMap[0] = KICK_THRESHOLD;
-  thresholdMap[1] = RTOM_THRESHOLD;
-  thresholdMap[2] = RCYM_THRESHOLD;
-  thresholdMap[3] = LCYM_THRESHOLD;
-  thresholdMap[4] = SNARE_THRESHOLD;
-  thresholdMap[5] = LTOM_THRESHOLD;  
+  thresholdMap[0] = PAD0_THRESHOLD;
+  thresholdMap[1] = PAD1_THRESHOLD;
+  thresholdMap[2] = PAD2_THRESHOLD;
+  thresholdMap[3] = PAD3_THRESHOLD;
+  thresholdMap[4] = PAD4_THRESHOLD;
+  thresholdMap[5] = PAD5_THRESHOLD; 
+
+  minReadingMap[0] = PAD0_MIN;
+  minReadingMap[1] = PAD1_MIN;
+  minReadingMap[2] = PAD2_MIN;
+  minReadingMap[3] = PAD3_MIN;
+  minReadingMap[4] = PAD4_MIN;
+  minReadingMap[5] = PAD5_MIN; 
+
+  maxReadingMap[0] = PAD0_MAX;
+  maxReadingMap[1] = PAD1_MAX;
+  maxReadingMap[2] = PAD2_MAX;
+  maxReadingMap[3] = PAD3_MAX;
+  maxReadingMap[4] = PAD4_MAX;
+  maxReadingMap[5] = PAD5_MAX;
   
-  noteMap[0] = KICK_NOTE;
-  noteMap[1] = RTOM_NOTE;
-  noteMap[2] = RCYM_NOTE;
-  noteMap[3] = LCYM_NOTE;
-  noteMap[4] = SNARE_NOTE;
-  noteMap[5] = LTOM_NOTE;  
+  noteMap[0] = PAD0_NOTE;
+  noteMap[1] = PAD1_NOTE;
+  noteMap[2] = PAD2_NOTE;
+  noteMap[3] = PAD3_NOTE;
+  noteMap[4] = PAD4_NOTE;
+  noteMap[5] = PAD5_NOTE;  
 }
 
 void loop()
@@ -180,9 +223,15 @@ void loop()
   {
     //get a new signal from analog read
     unsigned short newSignal = analogRead(slotMap[i]);
-    newSignal = map(newSignal, 100, 300, 0, 127);
+    // if (i == LTOM_PAD) {
+    //   newSignal = map(newSignal, minReadingMap[i], maxReadingMap[i], 0, 127);
+    //   signalBuffer[i][currentSignalIndex[i]] = newSignal;
+    // } else {
+    //   newSignal = map(newSignal, minReadingMap[i], maxReadingMap[i], 0, 127);
+    //   signalBuffer[i][currentSignalIndex[i]] = newSignal;
+    // }    
+    newSignal = map(newSignal, DEFAULT_MIN_READING, maxReadingMap[i], 0, 127);
     signalBuffer[i][currentSignalIndex[i]] = newSignal;
-    
     //if new signal is 0
     if(newSignal < thresholdMap[i])
     {
@@ -216,6 +265,15 @@ void loop()
         
         if(newPeak > 0)
         {
+          // if(i == KICK_PAD){
+          //   noteFire(noteMap[i], newPeak);
+          //   noteReady[i] = false;
+          //   noteReadyVelocity[i] = 0;
+          //   lastNoteTime[i] = currentTime;
+          //   continue;
+          // } else {
+          //   recordNewPeak(i, newPeak);
+          // }
           recordNewPeak(i, newPeak);
         }
       }

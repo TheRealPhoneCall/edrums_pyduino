@@ -1,0 +1,146 @@
+<div class="page-header"> 
+    <div class="btn-group pull-right">
+        <!-- Trigger the modal with a button -->
+        <button type="button" class="btn btn-primary addChecklistItem" data-toggle="modal" data-target="#modalChecklistItem">Add Checklist Item</button>
+    </div>
+    <h1>Checklist Settings</h1> 
+</div>
+
+<div id="ChecklistItem">
+    <div id="ChecklistItemTable" class="row visible"  style="padding-left: 10px; padding-right: 10px; ">
+        <table id="ChecklistItemDataTable" class="display table table-striped" cellspacing="0" width="100%">
+            <thead>
+                <tr>
+                    <td width="10%">Section</td>
+                    <td width="10%">Subsection</td>
+                    <td width="15%">Description</td>
+                    <td width="10%">Where to check?</td>
+                    <td width="5%">Check Type</td>
+                    <td width="10%">S.O.T.</td>
+                    <td width="10%">How to check?</td>
+                    <td width="5%">Material?</td>
+                    <td width="5%">Score</td>
+                    <td width="10%">Related Preference</td>
+                    <td width="2.5%">Sort</td>
+                    <td width="5%"></td>
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+
+<!-- Modal -->
+<form id="modalChecklistItem" class="form-horizontal modal fade" method="POST" action="" enctype="multipart/form-data" role="dialog">
+
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Checklist Settings</h4>
+            </div>
+            <div class="modal-body" style="padding:30px 20px;">
+                <div class="form-group text-primary" id="msgDiv">
+                                        
+                </div>
+                <input type="hidden" id="id" name="id" class="form-control" value="">
+                <div class="form-group">
+                    <label class="col-md-4 control-label" for="item_section">Section</label>
+                    <div class="col-md-8">
+                        <select id="item_section" name="item_section" class="form-control">
+                            <option value="1">Cover Letter</option>
+                            <option value="2">About You</option>
+                            <option value="3">Changing Your Investments</option>
+                            <option value="4">Costs</option>
+                            <option value="5">How We Can Help You</option>
+                            <option value="6">More Information</option>
+                            <option value="7">Our Advice</option>
+                            <option value="8">Overview of Our Advice-Flowcharts</option>
+                            <option value="9">Proposed Asset Allocation</option>
+                            <option value="10">Replacing an Investment</option>
+                            <option value="11">What You Want To Achieve</option>
+                            <option value="12">Your Investment Risk Profile</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-4 control-label" for="item_subsection">Sub-Section</label>
+                    <div class="col-md-8">
+                        <select id="item_subsection" name="item_subsection" class="form-control">
+                            <option value="1">Cover Letter</option>
+                            <option value="2">Personal Profile</option>
+                            <option value="3">Dependants</option>
+                            <option value="4">Income and Expenses</option>
+                            <option value="5">Personal Assets</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-4 control-label" for="description">Description</label>
+                    <div class="col-md-8">
+                        <input type="text" id="description" name="description" class="form-control">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-4 control-label" for="check_where">Where to Check</label>
+                    <div class="col-md-8">
+                        <input type="text" id="check_where" name="check_where" class="form-control">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-4 control-label" for="section">Check-Type</label>
+                    <div class="col-md-8">
+                        <select id="section" name="section" class="form-control">
+                            <option value="1">Technical</option>
+                            <option value="2">Non-Technical</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-4 control-label" for="check_sot">Source of Truth</label>
+                    <div class="col-md-8">
+                        <input type="text" id="check_sot" name="check_sot" class="form-control">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-4 control-label" for="check_how">How to Check</label>
+                    <div class="col-md-8">
+                        <input type="text" id="check_how" name="check_how" class="form-control">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-4 control-label" for="is_material">Material?</label>
+                    <div class="col-md-8">
+                        <input type="checkbox" id="is_material" name="is_material" value="False">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-4 control-label" for="item_score">Score</label>
+                    <div class="col-md-8">
+                        <input type="text" id="item_score" name="item_score" placeholder="Enter item score" class="form-control">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-4 control-label" for="related_preference">Related Preference</label>
+                    <div class="col-md-8">
+                        <select id="related_preference" name="related_preference" class="form-control">
+                            <option value="">None</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-4 control-label" for="sort">Sort</label>
+                    <div class="col-md-8">
+                        <input type="text" id="sort" name="sort" class="form-control">
+                    </div>
+                </div>                    
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-success btnSubmit"><span class="glyphicon glyphicon-check"></span> Submit</button>
+                <button class="btn btn-default btnCancel" data-dismiss="modal">Close</button>
+            </div>
+        </div>    
+    </div>
+</form>

@@ -6,11 +6,12 @@
 
 #include "Arduino.h"
 
+#define BAUD_RATE 115200
 #define NUM_PIEZOS 6
 
 void setup(){
   // initialize serial comms
-  Serial.begin(9600); 
+  Serial.begin(BAUD_RATE); 
 }
 
 void loop(){
@@ -18,10 +19,14 @@ void loop(){
   for(unsigned short i=0; i<NUM_PIEZOS; i++){
     // read piezo pin
     unsigned short piezoVal = analogRead(i);
-    Serial.print(piezoVal);
-    Serial.print(" ");
+    if(i!=NUM_PIEZOS-1){
+      Serial.print(piezoVal);
+      Serial.print(" ");
+    } else {
+      Serial.println(piezoVal);
+    }
   }
 
   // wait 
-  delay(5);
+  delay(10);
 }

@@ -1,0 +1,36 @@
+[0514/201001:FATAL:v8_initializer.cc(215)] Natives length 814040 H(computed) 1670198871174433814642307721725798402878095187140734464138970747361848957581 H(expected) 1321177616756827402670201658234786734708452688764429284648566166379762319202
+Backtrace:
+	(No symbol) [0x015426F7]
+	(No symbol) [0x0153D231]
+	icu_56::RuleBasedBreakIterator::operator!= [0x01EAA706+156838]
+	icu_56::RuleBasedBreakIterator::operator!= [0x01EAA016+155062]
+	(No symbol) [0x013A2500]
+	icu_56::Transliterator::setID [0x039B23D2+262002]
+	BaseThreadInitThunk [0x75A98744+36]
+	RtlGetAppContainerNamedObjectPath [0x7736587D+253]
+	RtlGetAppContainerNamedObjectPath [0x7736584D+205]
+
+[0514/201007:FATAL:v8_initializer.cc(215)] Natives length 814040 H(computed) 1670198871174433814642307721725798402878095187140734464138970747361848957581 H(expected) 1321177616756827402670201658234786734708452688764429284648566166379762319202
+Backtrace:
+	(No symbol) [0x015426F7]
+	(No symbol) [0x0153D231]
+	icu_56::RuleBasedBreakIterator::operator!= [0x01EAA706+156838]
+	icu_56::RuleBasedBreakIterator::operator!= [0x01EAA016+155062]
+	(No symbol) [0x013A2500]
+	icu_56::Transliterator::setID [0x039B23D2+262002]
+	BaseThreadInitThunk [0x75A98744+36]
+	RtlGetAppContainerNamedObjectPath [0x7736587D+253]
+	RtlGetAppContainerNamedObjectPath [0x7736584D+205]
+
+[0516/000218:FATAL:v8_initializer.cc(215)] Natives length 814040 H(computed) 1670198871174433814642307721725798402878095187140734464138970747361848957581 H(expected) 1321177616756827402670201658234786734708452688764429284648566166379762319202
+Backtrace:
+	(No symbol) [0x013326F7]
+	(No symbol) [0x0132D231]
+	icu_56::RuleBasedBreakIterator::operator!= [0x01C9A706+156838]
+	icu_56::RuleBasedBreakIterator::operator!= [0x01C9A016+155062]
+	(No symbol) [0x01192500]
+	icu_56::Transliterator::setID [0x037A23D2+262002]
+	BaseThreadInitThunk [0x75B08744+36]
+	RtlGetAppContainerNamedObjectPath [0x76EF587D+253]
+	RtlGetAppContainerNamedObjectPath [0x76EF584D+205]
+
