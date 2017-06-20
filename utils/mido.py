@@ -1,23 +1,23 @@
 import time
 import mido
-from mido import Message, MidiFile, MidiTrack
+import serial
+# from mido import Message, MidiFile, MidiTrack
 
 import pygame
 from pygame.locals import *
-from mingus.containers import *
-from mingus.midi import fluidsynth
 
-from settings import settings
+# # from settings import settings
+from settings import *
 
 class Midi(object):
     def __init__(self, midi_file="utils\midi\output.mid", 
-                 virtual_port=settings.MIDI_PORT, instrument=0)
+                 virtual_port=MIDI_PORT, instrument=0):
         # instantiate midi
         self.midi_file = midi_file
-        self.midi = MidiFile()
-        self.track = MidiTrack()
+        self.midi = mido.MidiFile()
+        self.track = mido.MidiTrack()
         self.midi.tracks.append(self.track)
-        self.track.append(Message('program_change', program=12, time=0))
+        self.track.append(mido.Message('program_change', program=12, time=0))
         self.midi_msgs = []
 
         # ports
@@ -35,8 +35,8 @@ class Midi(object):
 
     def convert_midi_msg(self, msg_json):
         timedelta=time.time() - self.start_time
-        midi_msg = Message(msg_json['cmd'], msg_json['note'], 
-                           msg_json['velocity'], timedelta) 
+        midi_msg = mido.Message(msg_json['cmd'], msg_json['note'], 
+                                msg_json['velocity'], timedelta) 
         return midi_msg
 
     def store_midi_msg(self, midi_msg):
@@ -69,3 +69,32 @@ class Midi(object):
         # delete player object
         del self.player
         pygame.midi.quit()
+
+class Serial(object):
+    def __init__(self, com_port=COM_PORT, serial_rate=SERIAL_RATE):
+        try:
+            print com_port, serial_rate
+            self.serial = serial.Serial(com_port, serial_rate)
+        except Exception as e:
+            self.serial = serial.Serial(com_port, serial_rate)
+        print "Starting serial communication."
+        print self.serial   
+
+    def read_msg(self):        
+        serial_msg = self.serial.readline()
+        serial_msg = self.serial_msg.split(".")
+        return serial_msg
+
+    def parse_msg(self, serial_msg):
+        parsed_msg = {
+            'cmd': 'note_on' if (serial_msg[0] == 1) else 'note_off',
+            'pad': int(serial_msg[1]),
+            'velocity': int(serial_msg[2])
+        }
+        return parsed_msg
+
+    def quit(self):
+        print "Serial reading is now terminated."
+
+    def __str__(self):
+		return "{}".format(self.serial)

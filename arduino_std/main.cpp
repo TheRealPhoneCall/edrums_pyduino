@@ -210,12 +210,12 @@ void setup()
   maxReadingMap[4] = PAD4_MAX;
   maxReadingMap[5] = PAD5_MAX;
   
-  padMap[0] = PAD0_NOTE;
-  padMap[1] = PAD1_NOTE;
-  padMap[2] = PAD2_NOTE;
-  padMap[3] = PAD3_NOTE;
-  padMap[4] = PAD4_NOTE;
-  padMap[5] = PAD5_NOTE;  
+  padMap[0] = PAD0;
+  padMap[1] = PAD1;
+  padMap[2] = PAD2;
+  padMap[3] = PAD3;
+  padMap[4] = PAD4;
+  padMap[5] = PAD5;  
 }
 
 void loop()

@@ -1,13 +1,14 @@
 import time
 import json
 
-from utils.settings import *
-from utils.velocity import *
-from utils.serial import Serial
-from utils.mido import Midi
+# from settings.settings import pads, pad_map
+# from utils.velocity import *
+# from utils.serial import Serial
+from utils.mido import Midi, Serial
+from settings import *
 
 def main(com_port, midi_port, pad_config):
-    serial = Serial(com_port)
+    serial = Serial(com_port=com_port)
     midi = Midi(virtual_port=midi_port)
     pads = pads(pad_config)
     try:
@@ -19,6 +20,7 @@ def main(com_port, midi_port, pad_config):
             print "msg_parsed", msg_parsed
 
             # get the note from pad_map function
+            pads = pads(pad_config)
             note = pad_map(msg_parsed['pad'], pads)
             midi_json = {
                 'cmd': msg_parsed['cmd'],
@@ -41,7 +43,3 @@ def main(com_port, midi_port, pad_config):
         print "Keyboard interrupted."
         serial.quit()
         midi.quit()
-
-
-if __name__ == '__main__':
-    main()

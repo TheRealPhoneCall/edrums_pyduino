@@ -16,8 +16,9 @@ SERIAL_RATE = 115200
 COM_PORT = "COM5"
 MIDI_PORT = "berdrums"
 
-def pads(pad_json_path="settings\pad_maps\basic.json"):
+def pads(pad_json="basic.json"):
     # Initialize values
+    pad_json_path = "settings\pad_maps\%s" %pad_json
     try:
         with open(pad_json_path) as config_file:
             pads = json.loads(config_file)
