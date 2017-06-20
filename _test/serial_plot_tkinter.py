@@ -1,26 +1,34 @@
 #!/usr/bin/python
 #
-# Read stream of lines from an Arduino with a magnetic sensor. This
+# Read stream of lines from a Arduino Firmata. This
 # produces 3 values per line every 50ms that relate to the orientation
-# of the sensor. Each line looks like:
-# MAG   1.00    -2.00   0.00
-# with each data line starting with "MAG" and each field separated by
-# tab characters. Values are floating point numbers in ASCII encoding.
+# of the sensor. 
 #
 # This script supports both Python 2.7 and Python 3
 
 from __future__ import print_function, division, absolute_import
 import sys
+from pyfirmata import Arduino, util
+
 if sys.hexversion > 0x02ffffff:
     import tkinter as tk
 else:
     import Tkinter as tk
 from serial import Serial
 
+# initialize pyfirmata
+try:
+    board = Arduino('/dev/ttyUSB0')
+except:
+    board = Arduino('COM6')
+print("board initialized via the firmata protocol.")
+print(board)
+
+
 class App(tk.Frame):
-    def __init__(self, parent, title, serialPort):
+    def __init__(self, parent, title, board):
         tk.Frame.__init__(self, parent)
-        self.serialPort = serialPort
+        self.board = board
         self.npoints = 100
         self.Line1 = [0 for x in range(self.npoints)]
         self.Line2 = [0 for x in range(self.npoints)]
@@ -48,19 +56,14 @@ class App(tk.Frame):
         the sensor values and append to the stored data and post a replot
         request.
         """
-        if self.serialPort.inWaiting() != 0:
-            line = self.serialPort.readline()
-            line = line.decode('ascii').strip("\r\n")
-            if line[0:3] != "MAG":
-                print(line) # line not a valid sensor result.
-            else:
-                try:
-                    data = line.split(" ")
-                    x, y, z = data[1], data[2], data[3]
-                    self.append_values(x, y, z)
-                    self.after_idle(self.replot)
-                except Exception as e:
-                    print(e)
+        try:
+            x = board.get_pin('a:0:i').read()   # val from pad 0
+            y = board.get_pin('a:1:i').read()   # val from pad 1
+            z = board.get_pin('a:2:i').read()   # val from pad 2            
+            self.append_values(x, y, z)
+            self.after_idle(self.replot)
+        except Exception as e:
+            print(e)
         self.after(10, self.read_serial)
 
     def append_values(self, x, y, z):
@@ -109,7 +112,7 @@ def main(args = None):
     if len(args) > 2:
         baudrate = int(args[2])
     root = tk.Tk()
-    app = App(root, "Smooth Sailing", Serial(port, baudrate))
+    app = App(root, "Smooth Sailing", board)
     app.read_serial()
     app.mainloop()
     return 0

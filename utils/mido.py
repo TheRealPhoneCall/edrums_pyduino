@@ -1,60 +1,71 @@
+import time
 import mido
 from mido import Message, MidiFile, MidiTrack
-import time
-import datetime
-from datetime import timedelta as timedelta
 
-import serial
-try:
-    ser = serial.Serial('/dev/ttyUSB0', 9600)
-except:
-    ser = serial.Serial('COM5', 9600)
-print "Starting serial communication."
-print ser
+import pygame
+from pygame.locals import *
+from mingus.containers import *
+from mingus.midi import fluidsynth
 
-mid = MidiFile()
-track = MidiTrack()
-port = mido.open_output('berdrums 1')
-mid.tracks.append(track)
+from settings import settings
 
-start_time = time.time()
-prev_time = start_time
+class Midi(object):
+    def __init__(self, midi_file="utils\midi\output.mid", 
+                 virtual_port=settings.MIDI_PORT, instrument=0)
+        # instantiate midi
+        self.midi_file = midi_file
+        self.midi = MidiFile()
+        self.track = MidiTrack()
+        self.midi.tracks.append(self.track)
+        self.track.append(Message('program_change', program=12, time=0))
+        self.midi_msgs = []
 
-# instantiate track:
-track.append(Message('program_change', program=12, time=0))
-midi_msgs = []
-old_midi_msg = ""
+        # ports
+        self.virtual_port = virtual_port
+        self.outport = mido.open_output(self.virtual_port)
 
-try:
-    # loop through the midi messages received
-    while True:
-        ser.readline()
-        midi_msg = ser.readline()
-        midi_msg = midi_msg.split(".")
-        # print midi_msg
-        current_time = time.time()
-        midi_msg = {
-            'note_cmd': 'note_on' if int(midi_msg[0]) == 90 else 'note_off',
-            'note': int(midi_msg[1]),
-            'velocity': int(midi_msg[2]),
-            'timedelta': int(current_time-prev_time)
-        }
-        print "reading midi:"
-        print midi_msg
-        midi_msgs.append(midi_msg)
+        # initialize time
+        self.start_time = time.time()
+        self.prev_time = self.start_time
 
-        old_midi_msg = midi_msg
-        prev_time = current_time
+        # initialize pygame
+        pygame.midi.init()
+        self.player = pygame.midi.Output(0)
+        self.player.set_instrument(instrument)
 
-        msg = Message(midi_msg['note_cmd'], note=midi_msg['note'], 
-                      velocity=midi_msg['velocity'], time=midi_msg['timedelta'])
-        port.send(msg)
-        track.append(msg)
-except KeyboardInterrupt:
-    print "Keyboard interrupted."
-    print "Serial reading is now terminated."
-    mid.save('from_arduino.mid')
-    port.close()
-    print "Current MIDI messages:"
-    print midi_msgs
-    
+    def convert_midi_msg(self, msg_json):
+        timedelta=time.time() - self.start_time
+        midi_msg = Message(msg_json['cmd'], msg_json['note'], 
+                           msg_json['velocity'], timedelta) 
+        return midi_msg
+
+    def store_midi_msg(self, midi_msg):
+        # store note on midi track
+        self.midi.tracks.append(midi_msg)
+        return midi_msg
+
+    def send_midi_msg(self, midi_msg, port):
+        if port == self.virtual_port:
+            self.outport.send(midi_msg)
+        else:
+            # if not equal to default port, re instantiate outport.
+            outport = mido.open_output(port)
+            outport.send(midi_msg)
+
+    def play_note(self, cmd, note, velocity):
+        if cmd == 'note_on':
+            player.note_on(note, velocity)
+        elif cmd == 'note_off':
+            player.note_off(note, velocity)                
+
+    def quit(self):
+        self.midi.save(self.midi_file)
+        print "Current MIDI message:"
+        print self.midi_msgs
+
+        # close port
+        self.outport.close()
+
+        # delete player object
+        del self.player
+        pygame.midi.quit()

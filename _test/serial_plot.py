@@ -12,6 +12,7 @@ from collections import deque
 
 import matplotlib.pyplot as plt 
 import matplotlib.animation as animation
+from pyfirmata import Arduino, util
 
     
 # plot class
@@ -42,9 +43,11 @@ class AnalogPlot:
   # update plot
   def update(self, frameNum, a0, a1):
       try:
-          line = self.ser.readline()
-          data = [float(val) for val in line.split(" ")]
-          # print data
+          data = [
+              float(board.get_pin('a:0:i').read()),
+              float(board.get_pin('a:1:i').read()),              
+          ]
+          print('data:', data)
           if(len(data) == 2):
               self.add(data)
               a0.set_data(range(self.maxLen), self.ax)

@@ -1,0 +1,55 @@
+{
+    "id": 1,
+    "name": "basic",
+    "description": "",
+    "pads":[
+        {
+            "id": 0,
+            "name": "SNARE",
+            "note": 70,
+            "threshold": 30,
+            "channel": 0,
+            "port": "berdrums"
+        },
+        {
+            "id": 1,
+            "name": "SNARE",
+            "note": 71,
+            "threshold": 30,
+            "channel": 0,
+            "port": "berdrums"
+        },
+        {
+            "id": 2,
+            "name": "LTOM",
+            "note": 72,
+            "threshold": 30,
+            "channel": 0,
+            "port": "berdrums"
+        },
+        {
+            "id": 3,
+            "name": "FTOM",
+            "note": 73,
+            "threshold": 100,
+            "channel": 0,
+            "port": "berdrums"
+        },
+        {
+            "id": 4,
+            "name": "LCYM",
+            "note": 74,
+            "threshold": 100,
+            "channel": 0,
+            "port": "berdrums"
+        },
+        {
+            "id": 5,
+            "name": "KICK",
+            "note": 75,
+            "threshold": 50,
+            "channel": 0,
+            "port": "berdrums"
+        }
+    ]
+}

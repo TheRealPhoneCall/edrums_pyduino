@@ -11,7 +11,7 @@ from utils.velocity import *
 try:
     board = Arduino('/dev/ttyUSB0')
 except:
-    board = Arduino('COM5')
+    board = Arduino('COM6')
 print "board initialized via the firmata protocol."
 print board
 
@@ -20,6 +20,11 @@ midi = MidiFile()
 track = MidiTrack()
 midi.tracks.append(track)
 
+# initialize vel object
+piezo_val = board.get_pin('a:0:i')
+piezo_val = piezo_val.read()
+print piezo_val
+
 # initialize time
 start_time = time.time()
 prev_time = start_time
@@ -27,19 +32,6 @@ prev_time = start_time
 # instantiate track:
 track.append(Message('program_change', program=12, time=0))
 midi_msgs = []
-
-def serial_send(ser, data):
-    ser.write(data.encode())
-
-def serial_recv(ser):
-    return ser.readline()
-
-def get_pin_val(msg_recvd):
-    msg_recvd = msg_recvd.split(":")
-    return int(msg_recvd[1])
-
-def get_msgs_recvd(msgs_recvd):
-    return msgs_recvd.split(",")
 
 def fire_note(pin, note, velocity):
 
@@ -71,7 +63,7 @@ def main():
                 
                 if (piezo_val >= threshold[pin] and not is_reading[pin]):
                     current_time = time.time()
-                    if (current_time - timer[pin] >= DEBOUNCE)
+                    
 
     except KeyboardInterrupt:
         print "Keyboard interrupted."
