@@ -1,6 +1,6 @@
 import time
 import sys
-from mido import *
+import mido
 import pygame
 from pygame.locals import *
 
@@ -20,20 +20,21 @@ class Midi(object):
         # ports
         self.virtual_port = virtual_port
         self.outport = mido.open_output(self.virtual_port)
+        self.inport = mido.open_input(self.virtual_port)
 
         # initialize time
         self.start_time = time.time()
         self.prev_time = self.start_time
 
         # initialize pygame
-        pygame.midi.init()
-        self.player = pygame.midi.Output(0)
-        self.player.set_instrument(instrument)
+        # pygame.midi.init()
+        # self.player = pygame.midi.Output(0)
+        # self.player.set_instrument(instrument)
 
     def convert_midi_msg(self, msg_json):
         timedelta=time.time() - self.start_time
-        midi_msg = mido.Message(msg_json['cmd'], msg_json['note'], 
-                                msg_json['velocity'], timedelta) 
+        midi_msg = mido.Message(msg_json['cmd'], note=msg_json['note'], 
+                                velocity=msg_json['velocity'], time=timedelta) 
         return midi_msg
 
     def store_midi_msg(self, midi_msg):
@@ -41,19 +42,34 @@ class Midi(object):
         self.midi.tracks.append(midi_msg)
         return midi_msg
 
-    def send_midi_msg(self, midi_msg, port):
+    def send_midi_msg(self, midi_msg, port=MIDI_PORT):
         if port == self.virtual_port:
             self.outport.send(midi_msg)
         else:
             # if not equal to default port, re instantiate outport.
             outport = mido.open_output(port)
             outport.send(midi_msg)
+        
+        print "sent to vitual port: " + port
+        print "midi msg: ", midi_msg
 
-    def play_note(self, cmd, note, velocity):
-        if cmd == 'note_on':
-            player.note_on(note, velocity)
-        elif cmd == 'note_off':
-            player.note_off(note, velocity)                
+    def recv_midi_msg(self, midi_msg, port=MIDI_PORT):
+        # TODO: Explore MIDI reading from bytes of data
+        if port == self.virtual_port:
+            msg = self.inport.receive(midi_msg)
+        else:
+            # if not equal to default port, re instantiate outport.
+            inport = mido.open_input(port)
+            msg = inport.receive(midi_msg)
+        
+        print "recvd from vitual port: " + port
+        print "midi msg: ", midi_msg
+
+    # def play_note(self, cmd, note, velocity):
+    #     if cmd == 'note_on':
+    #         player.note_on(note, velocity)
+    #     elif cmd == 'note_off':
+    #         player.note_off(note, velocity)                
 
     def quit(self):
         self.midi.save(self.midi_file)
@@ -64,5 +80,5 @@ class Midi(object):
         self.outport.close()
 
         # delete player object
-        del self.player
-        pygame.midi.quit()
+        # del self.player
+        # pygame.midi.quit()

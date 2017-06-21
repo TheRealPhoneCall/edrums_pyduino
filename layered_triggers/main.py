@@ -1,65 +1,77 @@
-import pyaudio
-import numpy as np
-from mido import Message, MidiFile, MidiTrack
+from .midos import Midi
+from .serials import Serial
+from .slaps import SlapEvent
 
-FORMAT = pyaudio.paInt16
-CHANNELS = 1
-CHANNEL_IN = 2
-CHANNEL_OUT = 5
-RATE = 44100
-CHUNK = 1024
-RECORD_SECONDS = 5
-WAVE_OUTPUT_FILENAME = "file.wav"
-VIRTUAL_MIDI_PORT = "berdrums"
+def main(com_port, midi_port, baud_rate, pad_config):
+    serial = Serial(com_port=com_port, serial_rate=baud_rate)
+    midi = Midi(virtual_port=midi_port)
+    slap = SlapEvent(midi)
+    pads_config = pads(pad_config)
+    try:
+        while True:
+            # TODO: Better approach would be to use threading for 
+            # different kinds of triggers 
+            #------- 1. Read off values from pad first
+            # read serial first
+            msg_recvd = serial.read_msg()
+            print "msg_recvd", msg_recvd
 
-class SlapRecord(object):
+            # get the note from pad_map function
+            pad = pad_map(msg_recvd['pad'], pads_config)
+            midi_json = {
+                'cmd': msg_recvd['cmd'],
+                'note': pad['note'],
+                'velocity': msg_recvd['velocity']
+            }
 
-    def __init__(self, ):
-        # instatntiate pyaudio
-        pyaudio = pyaudio.PyAudio()
-        self.stream = pyaudio.open(
-            format=paInt16,
-            channels=1,
-            rate=RATE,
-            input=True,
-            frames_per_buffer=WINDOW_SIZE,
-            stream_callback=self.callback,
-        )
-        self.stream.start_stream()
+            # convert to mido msg
+            midi_msg = midi.convert_midi_msg(midi_json)
+            
+            # store midi msg then send to virtual port
+            midi.store_midi_msg(midi_msg)
+            midi.send_midi_msg(midi_msg)
 
-        # instantiate mido
-        self.midi = MidiFile()
-        self.track = MidiTrack()
-        self.midi.tracks.append(track)
-        self.track.append(Message('program_change', program=12, time=0))
+            #--------2. Listen to slap event
+            # detect a slap event
+            slap.listen()
 
-        # instantiate midi virtual port
-        self.port = mido.open_output(VIRTUAL_MIDI_PORT)
-        
+            if slap.is_triggered:
+                # play the raw slap sound back
+                slap.playback()
 
-    def spectral_analyzer(self):
-        pass
+                # perform spectral analysis
+                slap.analyze_spectrum()
 
-    def detect_pitch(self):
-        start = int(fs/1200)
-        end = int(fs/500)
-        narrowed_ceptstrum = ceptstrum[start:end]
+                # detect pitch and amp
+                freq = slap.detect_pitch()
+                amp = slap.detect_amplitude()
 
-        peak_index = narrowed_ceptstrum.argmax()
-        fundamental_freq = fs/(start+peak_index)
+                # map freq and amplitude to respective
+                # note and velocity components
+                note = freq_map(freq)
+                vel = amp_map(amp)
 
-        return fundamental_freq
+                # get msg and clean it for sending/storing
+                midi_on_json = {'cmd': 'note_on', 'note': note, 
+                                'velocity': vel}
+                midi_off_json = {'cmd': 'note_off', 'note': note, 
+                                'velocity': vel} 
+                midi_on_msg = midi.convert_midi_msg(midi_on_json)
+                midi_off_msg = midi.convert_midi_msg(midi_off_json)
 
-    def playback(self, freq):
-        current_time = time.time()
-        self.send_to_port(midi_msg=self.midi.Message('note_on', note=freq))
-        self.send_to_port(midi_msg=self.midi.Message('note_off', note=freq))
+                # store and send to virtual port
+                midi.store_midi_msg(midi_on_msg)
+                midi.store_midi_msg(midi_off_msg)
+                midi.send_midi_msg(midi_on_msg)
+                midi.send_midi_msg(midi_off_msg)
 
-    def send_to_port(self, midi_msg):
-        self.port.send(midi_msg)
 
-    def callback(self, data, frame_count, time_info, status_flag):
-        data_array = np.fromString(data, dtype=np.int16)
-        self.spectral_analyzer.process_data(data_array)
+            # end of block            
 
-        return (data, paContinue)
+    except KeyboardInterrupt:
+        print "Keyboard interrupted."
+        serial.quit()
+        midi.quit()
+
+if __name__ == "__main__":
+    main()

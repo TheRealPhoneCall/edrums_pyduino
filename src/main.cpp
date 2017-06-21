@@ -68,7 +68,7 @@
 #define DEFAULT_MAX_READING 1024
 
 //MIDI baud rate
-#define SERIAL_RATE 115200
+#define SERIAL_RATE 38400
 
 //Program defines
 //ALL TIME MEASURED IN MILLISECONDS
@@ -103,20 +103,42 @@ boolean isLastPeakZeroed[NUM_PIEZOS];
 unsigned long lastPeakTime[NUM_PIEZOS];
 unsigned long lastNoteTime[NUM_PIEZOS];
 
+// void midiNoteOn(unsigned short pad, unsigned short midiVelocity)
+// {
+//     String strSerialMsg = "";
+//     String strNoteOnCmd = String(NOTE_ON_CMD);  
+//     String strPad = String(pad);  
+//     String strVelocity = String(midiVelocity);
+//     strSerialMsg = strNoteOnCmd + "." + strPad + "." + strVelocity;
+//     Serial.println(strSerialMsg);
+// }
+
+// void midiNoteOff(unsigned short pad, unsigned short midiVelocity)
+// {
+//     String strSerialMsg = "";    
+//     String strNoteOffCmd = String(NOTE_OFF_CMD);  
+//     String strPad = String(pad);  
+//     String strVelocity = String(midiVelocity);
+//     strSerialMsg = strNoteOffCmd + "." + strPad + "." + strVelocity;
+//     Serial.println(strSerialMsg);
+// }
+
 void midiNoteOn(byte pad, byte midiVelocity)
 {
-    String strNoteOnCmd = String(NOTE_ON_CMD);  
-    String strPad = String(pad);  
-    String strVelocity = String(midiVelocity);
-    Serial.println(strNoteOnCmd + "." + strPad + "." + strVelocity);
+    Serial.println(NOTE_ON_CMD);  
+    Serial.println(pad);  
+    Serial.println(midiVelocity);
+    // strSerialMsg = strNoteOnCmd + "." + strPad + "." + strVelocity;
+    // Serial.println(strSerialMsg);
 }
 
 void midiNoteOff(byte pad, byte midiVelocity)
 {
-    String strNoteOffCmd = String(NOTE_OFF_CMD);  
-    String strPad = String(pad);  
-    String strVelocity = String(midiVelocity);
-    Serial.println(strNoteOffCmd + "." + strPad + "." + strVelocity);
+    Serial.println(NOTE_OFF_CMD);  
+    Serial.println(pad);  
+    Serial.println(midiVelocity);
+    // strSerialMsg = strNoteOffCmd + "." + strPad + "." + strVelocity;
+    // Serial.println(strSerialMsg);
 }
 
 void padFire(unsigned short pad, unsigned short velocity)
@@ -173,6 +195,8 @@ void recordNewPeak(short slot, short newPeak)
 void setup()
 {
   Serial.begin(SERIAL_RATE);
+
+  while (!Serial);
   
   //initialize globals
   for(short i=0; i<NUM_PIEZOS; ++i)

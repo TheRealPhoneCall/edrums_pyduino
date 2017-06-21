@@ -1,0 +1,108 @@
+{
+    "id": 1,
+    "name": "Sample Midi File",
+    "type": "Drums",
+    "midi": [
+        {
+            "note": 70,
+            "cmd": "note_on",
+            "velocity": 100
+        },
+        {
+            "note": 70,
+            "cmd": "note_off",
+            "velocity": 100
+        },
+        {
+            "note": 71,
+            "cmd": "note_on",
+            "velocity": 89
+        },
+        {
+            "note": 71,
+            "cmd": "note_off",
+            "velocity": 89
+        },
+        {
+            "note": 72,
+            "cmd": "note_on",
+            "velocity": 113
+        },
+        {
+            "note": 72,
+            "cmd": "note_off",
+            "velocity": 113
+        },
+        {
+            "note": 70,
+            "cmd": "note_on",
+            "velocity": 97
+        },
+        {
+            "note": 70,
+            "cmd": "note_off",
+            "velocity": 97
+        },
+        {
+            "note": 73,
+            "cmd": "note_on",
+            "velocity": 65
+        },
+        {
+            "note": 73,
+            "cmd": "note_off",
+            "velocity": 65
+        },
+        {
+            "note": 72,
+            "cmd": "note_on",
+            "velocity": 113
+        },
+        {
+            "note": 72,
+            "cmd": "note_off",
+            "velocity": 113
+        },
+        {
+            "note": 74,
+            "cmd": "note_on",
+            "velocity": 124
+        },
+        {
+            "note": 74,
+            "cmd": "note_off",
+            "velocity": 124
+        },
+        {
+            "note": 71,
+            "cmd": "note_on",
+            "velocity": 45
+        },
+        {
+            "note": 71,
+            "cmd": "note_off",
+            "velocity": 45
+        },
+        {
+            "note": 72,
+            "cmd": "note_on",
+            "velocity": 113
+        },
+        {
+            "note": 72,
+            "cmd": "note_off",
+            "velocity": 113
+        },
+        {
+            "note": 75,
+            "cmd": "note_on",
+            "velocity": 127
+        },
+        {
+            "note": 75,
+            "cmd": "note_off",
+            "velocity": 127
+        }
+
+    ]
+}

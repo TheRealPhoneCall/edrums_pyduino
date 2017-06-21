@@ -2,7 +2,7 @@ import serial
 try:
     ser = serial.Serial('/dev/ttyUSB0', 9600)
 except:
-    ser = serial.Serial('COM5', 9600)
+    ser = serial.Serial('COM6', 34800)
 print "Starting serial communication."
 print ser
 

@@ -7,36 +7,37 @@ import json
 # from utils.serial import Serial
 print sys.path
 
-from utils.midos import Midi
-from utils.serials import Serial
-from settings import *
+from .midos import Midi
+from .serials import Serial
+from settings import pads, pad_map
 
-def main(com_port, midi_port, pad_config):
-    serial = Serial(com_port=com_port)
+def main(com_port, midi_port, baud_rate, pad_config):
+    serial = Serial(com_port=com_port, serial_rate=baud_rate)
     midi = Midi(virtual_port=midi_port)
-    pads = pads(pad_config)
+    pads_config = pads(pad_config)
     try:
         while True:
             # read serial first
             msg_recvd = serial.read_msg()
             print "msg_recvd", msg_recvd
-            msg_parsed = serial.parse_msg(msg_recvd)
-            print "msg_parsed", msg_parsed
+            # msg_parsed = serial.parse_msg(msg_recvd)
+            # print "msg_parsed", msg_parsed
+
+            # # if msg_parsed is empty, continue on next iteration
+            # if msg_parsed is None:
+            #     continue
 
             # get the note from pad_map function
-            pads = pads(pad_config)
-            note = pad_map(msg_parsed['pad'], pads)
+            pad = pad_map(msg_recvd['pad'], pads_config)
             midi_json = {
-                'cmd': msg_parsed['cmd'],
-                'note': note,
-                'velocity': msg_parsed['velocity']
+                'cmd': msg_recvd['cmd'],
+                'note': pad['note'],
+                'velocity': msg_recvd['velocity']
             }
-            print "midi_json", midi_json
 
             # convert to mido msg
             midi_msg = midi.convert_midi_msg(midi_json)
-            print "midi_msg", midi_msg
-
+            
             # store midi msg then send to virtual port
             midi.store_midi_msg(midi_msg)
             midi.send_midi_msg(midi_msg)

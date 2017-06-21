@@ -4,9 +4,13 @@ import datetime
 from datetime import timedelta as timedelta
 
 import serial
-ser = serial.Serial('/dev/ttyUSB0', 9600)
+# instantiate serial
+try:
+    serial = serial.Serial('/dev/ttyUSB0', 34800)
+except:
+    serial = serial.Serial('COM6', 38400)
 print "Starting serial communication."
-print ser
+print serial
 
 mid = MidiFile()
 track = MidiTrack()
@@ -23,26 +27,27 @@ old_midi_msg = ""
 try:
     # loop through the midi messages received
     while True:
-        ser.readline()
-        midi_msg = ser.readline()
-        midi_msg = midi_msg.split(".")
+        # serial.readline()
+        cmd = serial.readline()
+        pad = serial.readline()
+        vel = serial.readline()
+        print cmd, pad, vel
+        # current_time = time.time()
+        # midi_msg = {
+        #     'note_cmd': 'note_on' if int(midi_msg[0]) == 90 else 'note_off',
+        #     'note': int(midi_msg[1]),
+        #     'velocity': int(midi_msg[2]),
+        #     'timedelta': int(current_time-prev_time)
+        # }
+        # print "reading midi:"
         # print midi_msg
-        current_time = time.time()
-        midi_msg = {
-            'note_cmd': 'note_on' if int(midi_msg[0]) == 90 else 'note_off',
-            'note': int(midi_msg[1]),
-            'velocity': int(midi_msg[2]),
-            'timedelta': int(current_time-prev_time)
-        }
-        print "reading midi:"
-        print midi_msg
-        midi_msgs.append(midi_msg)
+        # midi_msgs.append(midi_msg)
 
-        old_midi_msg = midi_msg
-        prev_time = current_time
+        # old_midi_msg = midi_msg
+        # prev_time = current_time
 
-        track.append(Message(midi_msg['note_cmd'], note=midi_msg['note'], 
-                             velocity=midi_msg['velocity'], time=midi_msg['timedelta']))
+        # track.append(Message(midi_msg['note_cmd'], note=midi_msg['note'], 
+        #                      velocity=midi_msg['velocity'], time=midi_msg['timedelta']))
 except KeyboardInterrupt:
     print "Keyboard interrupted."
     print "Serial reading is now terminated."

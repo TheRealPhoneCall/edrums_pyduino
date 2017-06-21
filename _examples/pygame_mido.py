@@ -8,9 +8,9 @@ from datetime import timedelta as timedelta
 
 # instantiate serial
 try:
-    serial = serial.Serial('/dev/ttyUSB0', 9600)
+    serial = serial.Serial('/dev/ttyUSB0', 34800)
 except:
-    serial = serial.Serial('COM5', 9600)
+    serial = serial.Serial('COM5', 38400)
 print "Starting serial communication."
 print serial
 

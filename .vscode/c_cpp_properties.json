@@ -5,8 +5,6 @@
             "includePath": [
                 "C:/Users/Lenovo/.platformio/packages/framework-arduinoavr/cores/arduino",
                 "C:/Users/Lenovo/.platformio/packages/framework-arduinoavr/variants/eightanaloginputs",
-                "c:/Users/Lenovo/Documents/_BERDWARE/7.0_BerDrums/version_pyduino/.piolibdeps/Firmata_ID307",
-                "c:/Users/Lenovo/Documents/_BERDWARE/7.0_BerDrums/version_pyduino/.piolibdeps/Firmata_ID307/utility",
                 "c:/Users/Lenovo/Documents/_BERDWARE/7.0_BerDrums/version_pyduino/src",
                 "c:/Users/Lenovo/Documents/_BERDWARE/7.0_BerDrums/version_pyduino/.piolibdeps/Firmata_ID307",
                 "c:/Users/Lenovo/Documents/_BERDWARE/7.0_BerDrums/version_pyduino/.piolibdeps/Firmata_ID307/utility",
@@ -53,8 +51,6 @@
                 "path": [
                     "C:/Users/Lenovo/.platformio/packages/framework-arduinoavr/cores/arduino",
                     "C:/Users/Lenovo/.platformio/packages/framework-arduinoavr/variants/eightanaloginputs",
-                    "c:/Users/Lenovo/Documents/_BERDWARE/7.0_BerDrums/version_pyduino/.piolibdeps/Firmata_ID307",
-                    "c:/Users/Lenovo/Documents/_BERDWARE/7.0_BerDrums/version_pyduino/.piolibdeps/Firmata_ID307/utility",
                     "c:/Users/Lenovo/Documents/_BERDWARE/7.0_BerDrums/version_pyduino/src",
                     "c:/Users/Lenovo/Documents/_BERDWARE/7.0_BerDrums/version_pyduino/.piolibdeps/Firmata_ID307",
                     "c:/Users/Lenovo/Documents/_BERDWARE/7.0_BerDrums/version_pyduino/.piolibdeps/Firmata_ID307/utility",

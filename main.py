@@ -21,9 +21,11 @@ def main():
                         help='the pad configuration json file (default %(default))')
     parser.add_argument('-cp', '--com-port', type=str, default='COM5',
                         help='the serial port to communicate with arduino (default %(default))')
+    parser.add_argument('-br', '--baud-rate', type=int, default=115200,
+                        help='the baud rate to communicate with arduino (default %(default))')    
     parser.add_argument('-lmp', '--list-midi-ports', action='store_true',
                         help='list midi output ports and exit')
-    parser.add_argument('-mp', '--midi-port', type=str, default='berdrums',
+    parser.add_argument('-mp', '--midi-port', type=str, default='berdrums 1',
                         help='the virtual midi port to send output msg (default %(default))')
     args = parser.parse_args()
 
@@ -41,7 +43,7 @@ def main():
     # run drum pad modules
     if args.type == 'arduino_std':
         import arduino_std.main as arduino_std
-        arduino_std.main(args.com_port, args.midi_port, args.pad_config)
+        arduino_std.main(args.com_port, args.midi_port, args.baud_rate, args.pad_config)
 
     if args.type == 'arduino_firmata':
         import arduino_firmata.main as arduino_firmata

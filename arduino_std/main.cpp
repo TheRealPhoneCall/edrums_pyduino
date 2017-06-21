@@ -68,7 +68,7 @@
 #define DEFAULT_MAX_READING 1024
 
 //MIDI baud rate
-#define SERIAL_RATE 115200
+#define SERIAL_RATE 38400
 
 //Program defines
 //ALL TIME MEASURED IN MILLISECONDS
@@ -103,20 +103,24 @@ boolean isLastPeakZeroed[NUM_PIEZOS];
 unsigned long lastPeakTime[NUM_PIEZOS];
 unsigned long lastNoteTime[NUM_PIEZOS];
 
-void midiNoteOn(byte pad, byte midiVelocity)
+void midiNoteOn(unsigned short pad, unsigned short midiVelocity)
 {
+    String strSerialMsg = "";
     String strNoteOnCmd = String(NOTE_ON_CMD);  
     String strPad = String(pad);  
     String strVelocity = String(midiVelocity);
-    Serial.println(strNoteOnCmd + "." + strPad + "." + strVelocity);
+    strSerialMsg = strNoteOnCmd + "." + strPad + "." + strVelocity;
+    Serial.println(strSerialMsg);
 }
 
-void midiNoteOff(byte pad, byte midiVelocity)
+void midiNoteOff(unsigned short pad, unsigned short midiVelocity)
 {
+    String strSerialMsg = "";    
     String strNoteOffCmd = String(NOTE_OFF_CMD);  
     String strPad = String(pad);  
     String strVelocity = String(midiVelocity);
-    Serial.println(strNoteOffCmd + "." + strPad + "." + strVelocity);
+    strSerialMsg = strNoteOffCmd + "." + strPad + "." + strVelocity;
+    Serial.println(strSerialMsg);
 }
 
 void padFire(unsigned short pad, unsigned short velocity)
@@ -160,7 +164,7 @@ void recordNewPeak(short slot, short newPeak)
     //   padFire(padMap[slot], 2*padReadyVelocity[slot]); //tom low velocity fix
     // else
     //   padFire(padMap[slot], padReadyVelocity[slot]);
-    padFire(padMap[slot], padReadyVelocity[slot])
+    padFire(padMap[slot], padReadyVelocity[slot]);
     padReady[slot] = false;
     padReadyVelocity[slot] = 0;
     lastNoteTime[slot] = currentTime;
