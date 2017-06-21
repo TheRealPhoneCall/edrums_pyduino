@@ -1,10 +1,14 @@
+import sys
 import time
 import json
 
 # from settings.settings import pads, pad_map
 # from utils.velocity import *
 # from utils.serial import Serial
-from utils.mido import Midi, Serial
+print sys.path
+
+from utils.midos import Midi
+from utils.serials import Serial
 from settings import *
 
 def main(com_port, midi_port, pad_config):
