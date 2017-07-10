@@ -1,20 +1,21 @@
 {
     "id": 1,
-    "name": "basic",
+    "name": "reggae",
+    "ad_map": "GM",
     "description": "",
     "pads":[
         {
             "id": 0,
             "name": "LCYM",
-            "note": 70,
+            "note": 49,
             "threshold": 30,
             "channel": 0,
             "port": "berdrums 1"
         },
         {
             "id": 1,
-            "name": "FTOM",
-            "note": 71,
+            "name": "RCYM",
+            "note": 57,
             "threshold": 30,
             "channel": 0,
             "port": "berdrums 1"
@@ -22,7 +23,7 @@
         {
             "id": 2,
             "name": "KICK",
-            "note": 72,
+            "note": 36,
             "threshold": 30,
             "channel": 0,
             "port": "berdrums 1"
@@ -30,23 +31,23 @@
         {
             "id": 3,
             "name": "LTOM",
-            "note": 73,
+            "note": 50,
             "threshold": 100,
             "channel": 0,
             "port": "berdrums 1"
         },
         {
             "id": 4,
-            "name": "SNARE",
-            "note": 74,
+            "name": "Snare Shallow Rimshot",
+            "note": 127,
             "threshold": 100,
             "channel": 0,
             "port": "berdrums 1"
         },
         {
             "id": 5,
-            "name": "SNARE",
-            "note": 75,
+            "name": "Snare SideStick",
+            "note": 37,
             "threshold": 50,
             "channel": 0,
             "port": "berdrums 1"

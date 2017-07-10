@@ -2,6 +2,11 @@ import argparse
 import shutil
 import mido
 
+"""
+    Sample Runs:
+        python main.py -t arduino_std -pc basic.json -cp COM6 -br 38400
+"""
+
 def int_or_str(text):
     """Helper function for argument parsing."""
     try:
@@ -9,7 +14,7 @@ def int_or_str(text):
     except ValueError:
         return text
 
-def main():
+def arg_parser():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('-ld', '--list-devices', action='store_true',
                         help='list audio devices and exit')
@@ -25,9 +30,14 @@ def main():
                         help='the baud rate to communicate with arduino (default %(default))')    
     parser.add_argument('-lmp', '--list-midi-ports', action='store_true',
                         help='list midi output ports and exit')
-    parser.add_argument('-mp', '--midi-port', type=str, default='berdrums 1',
+    parser.add_argument('-mp', '--midi-port', type=str, default=u"berdrums 1",
                         help='the virtual midi port to send output msg (default %(default))')
-    args = parser.parse_args()
+
+    return parser
+
+def main():
+    parser = arg_parser()   
+    args = parser.parse_args() 
 
     # try:
     import sounddevice as sd

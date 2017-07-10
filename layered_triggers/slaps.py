@@ -13,7 +13,7 @@ VIRTUAL_MIDI_PORT = "berdrums"
 
 class SlapEvent(object):
 
-    def __init__(self, midi_obj):
+    def __init__(self):
         # instatntiate pyaudio
         pyaudio = pyaudio.PyAudio()
         self.stream = pyaudio.open(
@@ -25,9 +25,6 @@ class SlapEvent(object):
             stream_callback=self.callback,
         )
         self.stream.start_stream()
-
-        # instantiate mido
-        self.midi = midi_obj    
 
     def listen(self):
         # TODO: listens to the instrument to detect any 

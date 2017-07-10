@@ -20,7 +20,7 @@ class Midi(object):
         # ports
         self.virtual_port = virtual_port
         self.outport = mido.open_output(self.virtual_port)
-        self.inport = mido.open_input(self.virtual_port)
+        # self.inport = mido.open_input(self.virtual_port)
 
         # initialize time
         self.start_time = time.time()

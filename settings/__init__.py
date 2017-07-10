@@ -22,8 +22,6 @@ def pads(pad_json="basic.json"):
     try:
         with open(pad_json_path) as config_file:
             json_file = json.load(config_file)
-            # print config_file
-            # print json_file
             pads = json_file['pads']
 
             return pads
@@ -35,7 +33,6 @@ def pads(pad_json="basic.json"):
 
 def pad_map(pad_id, pads):
     for pad in pads:
-        print pad
         if pad_id == pad['id']:
             return pad
     return {}

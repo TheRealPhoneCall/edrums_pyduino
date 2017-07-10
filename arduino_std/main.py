@@ -1,3 +1,9 @@
+"""
+    Sample Runs:
+        python main.py -t arduino_std -pc basic.json -cp COM6 -br 38400
+        python arduino_std\main.py -pc basic.json -cp COM6 -br 38400
+"""
+
 import sys
 import time
 import json
@@ -5,7 +11,6 @@ import json
 # from settings.settings import pads, pad_map
 # from utils.velocity import *
 # from utils.serial import Serial
-print sys.path
 
 from .midos import Midi
 from .serials import Serial
@@ -20,12 +25,6 @@ def main(com_port, midi_port, baud_rate, pad_config):
             # read serial first
             msg_recvd = serial.read_msg()
             print "msg_recvd", msg_recvd
-            # msg_parsed = serial.parse_msg(msg_recvd)
-            # print "msg_parsed", msg_parsed
-
-            # # if msg_parsed is empty, continue on next iteration
-            # if msg_parsed is None:
-            #     continue
 
             # get the note from pad_map function
             pad = pad_map(msg_recvd['pad'], pads_config)
@@ -48,3 +47,11 @@ def main(com_port, midi_port, baud_rate, pad_config):
         print "Keyboard interrupted."
         serial.quit()
         midi.quit()
+
+if __name__ == "__main__":
+    sys.path.append("../")
+
+    from main import args
+    args = args()
+
+    main(args.com_port, args.midi_port, args.baud_rate, args.pad_config)

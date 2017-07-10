@@ -14,7 +14,7 @@ MAX_VELOCITY = 127
 TIME_DIFF = 0.010
 SERIAL_RATE = 115200
 COM_PORT = "COM5"
-MIDI_PORT = "berdrums"
+MIDI_PORT = "berdrums 1"
 
 def pads(pad_json="basic.json"):
     # Initialize values

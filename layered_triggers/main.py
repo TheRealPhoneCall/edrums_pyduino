@@ -5,7 +5,7 @@ from .slaps import SlapEvent
 def main(com_port, midi_port, baud_rate, pad_config):
     serial = Serial(com_port=com_port, serial_rate=baud_rate)
     midi = Midi(virtual_port=midi_port)
-    slap = SlapEvent(midi)
+    slap = SlapEvent()
     pads_config = pads(pad_config)
     try:
         while True:
