@@ -1,7 +1,7 @@
 """
     Sample Runs:
-        python main.py -t arduino_std -pc basic.json -cp COM6 -br 38400
-        python arduino_std\main.py -pc basic.json -cp COM6 -br 38400
+        python main.py -t arduino_std -cp COM6 -br 38400 -pc basic.json
+        python arduino_std\main.py -cp COM6 -br 38400 -pc basic.json
 """
 
 import sys
@@ -27,6 +27,7 @@ def main(com_port, midi_port, baud_rate, pad_config):
             print "msg_recvd", msg_recvd
 
             # get the note from pad_map function
+            # TODO: Can be improved by not making this routine iterable
             pad = pad_map(msg_recvd['pad'], pads_config)
             midi_json = {
                 'cmd': msg_recvd['cmd'],

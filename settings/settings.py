@@ -31,6 +31,7 @@ def pads(pad_json="basic.json"):
 
     return PADS
 
+# TODO: Can be improved by not making this routine iterable
 def pad_map(pad_id, pads):
     for pad in pads:
         if pad_id == pad.id:
