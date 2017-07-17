@@ -1,0 +1,56 @@
+{
+    "id": 1,
+    "name": "reggae",
+    "ad_map": "GM",
+    "description": "",
+    "pads":[
+        {
+            "id": 0,
+            "name": "LCYM",
+            "note": 49,
+            "threshold": 30,
+            "channel": 0,
+            "port": "berdrums 1"
+        },
+        {
+            "id": 1,
+            "name": "Snare RimShot db1",
+            "note": 109,
+            "threshold": 30,
+            "channel": 0,
+            "port": "berdrums 1"
+        },
+        {
+            "id": 2,
+            "name": "KICK",
+            "note": 36,
+            "threshold": 30,
+            "channel": 0,
+            "port": "berdrums 1"
+        },
+        {
+            "id": 3,
+            "name": "Snare Open Hit",
+            "note": 38,
+            "threshold": 100,
+            "channel": 0,
+            "port": "berdrums 1"
+        },
+        {
+            "id": 4,
+            "name": "HH Closed2 Tip",
+            "note": 123,
+            "threshold": 100,
+            "channel": 0,
+            "port": "berdrums 1"
+        },
+        {
+            "id": 5,
+            "name": "HH Closed2 Shaft",
+            "note": 122,
+            "threshold": 50,
+            "channel": 0,
+            "port": "berdrums 1"
+        }
+    ]
+}

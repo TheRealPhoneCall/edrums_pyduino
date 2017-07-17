@@ -1,0 +1,56 @@
+{
+    "id": 1,
+    "name": "reggae",
+    "ad_map": "GM",
+    "description": "",
+    "pads":[
+        {
+            "id": 0,
+            "name": "LCYM",
+            "note": 49,
+            "threshold": 30,
+            "channel": 0,
+            "port": "berdrums 1"
+        },
+        {
+            "id": 1,
+            "name": "RCYM",
+            "note": 57,
+            "threshold": 30,
+            "channel": 0,
+            "port": "berdrums 1"
+        },
+        {
+            "id": 2,
+            "name": "Tom 3 Open Hit",
+            "note": 114,
+            "threshold": 30,
+            "channel": 0,
+            "port": "berdrums 1"
+        },
+        {
+            "id": 3,
+            "name": "Tom 3 Open Hit",
+            "note": 114,
+            "threshold": 100,
+            "channel": 0,
+            "port": "berdrums 1"
+        },
+        {
+            "id": 4,
+            "name": "Tom 4 Open Hit",
+            "note": 41,
+            "threshold": 100,
+            "channel": 0,
+            "port": "berdrums 1"
+        },
+        {
+            "id": 5,
+            "name": "Tom 4 Open Hit",
+            "note": 41,
+            "threshold": 50,
+            "channel": 0,
+            "port": "berdrums 1"
+        }
+    ]
+}
