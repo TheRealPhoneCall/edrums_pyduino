@@ -3,54 +3,102 @@
     "name": "reggae",
     "ad_map": "GM",
     "description": "",
-    "pads":[
-        {
-            "id": 0,
-            "name": "LCYM",
-            "note": 49,
-            "threshold": 30,
-            "channel": 0,
-            "port": "berdrums 1"
+    "pads": {
+        "pad0": {
+            "notes": [
+                {
+                    "note": 49,
+                    "name": "LCYM",
+                    "min_vel": 10,
+                    "max_vel": 110,
+                    "threshold": 10,
+                    "channel": 0,
+                    "port": "berdrums 1"
+                }
+            ]
         },
-        {
-            "id": 1,
-            "name": "RCYM",
-            "note": 57,
-            "threshold": 30,
-            "channel": 0,
-            "port": "berdrums 1"
+        "pad1": {
+            "notes": [
+                {
+                    "note": 57,
+                    "name": "RCYM",
+                    "min_vel": 10,
+                    "max_vel": 110,
+                    "threshold": 10,
+                    "channel": 0,
+                    "port": "berdrums 1"
+                }
+            ]
         },
-        {
-            "id": 2,
-            "name": "Tom 3 Open Hit",
-            "note": 114,
-            "threshold": 30,
-            "channel": 0,
-            "port": "berdrums 1"
+        "pad2": {
+            "notes": [
+                {
+                    "note": 114,
+                    "name": "Tom 3 Open Hit",
+                    "min_vel": 5,
+                    "max_vel": 50,
+                    "threshold": 10,
+                    "channel": 0,
+                    "port": "berdrums 1"
+                },
+                {
+                    "note": 41,
+                    "name": "Tom 4 Open Hit",
+                    "min_vel": 5,
+                    "max_vel": 90,
+                    "threshold": 10,
+                    "channel": 0,
+                    "port": "berdrums 1"
+                }
+            ]
         },
-        {
-            "id": 3,
-            "name": "Tom 3 Open Hit",
-            "note": 114,
-            "threshold": 100,
-            "channel": 0,
-            "port": "berdrums 1"
+        "pad3": {
+            "notes": [
+                {
+                    "note": 114,
+                    "name": "Tom 3 Open Hit",
+                    "min_vel": 5,
+                    "max_vel": 50,
+                    "threshold": 10,
+                    "channel": 0,
+                    "port": "berdrums 1"
+                },
+                {
+                    "note": 41,
+                    "name": "Tom 4 Open Hit",
+                    "min_vel": 5,
+                    "max_vel": 90,
+                    "threshold": 10,
+                    "channel": 0,
+                    "port": "berdrums 1"
+                }
+            ]
         },
-        {
-            "id": 4,
-            "name": "Tom 4 Open Hit",
-            "note": 41,
-            "threshold": 100,
-            "channel": 0,
-            "port": "berdrums 1"
+        "pad4": {
+            "notes": [
+                {
+                    "note": 41,
+                    "name": "Tom 4 Open Hit",
+                    "min_vel": 0,
+                    "max_vel": 70,
+                    "threshold": 10,
+                    "channel": 0,
+                    "port": "berdrums 1"
+                }
+            ]
         },
-        {
-            "id": 5,
-            "name": "Tom 4 Open Hit",
-            "note": 41,
-            "threshold": 50,
-            "channel": 0,
-            "port": "berdrums 1"
+        "pad5": {
+            "notes": [
+                {
+                    "note": 41,
+                    "name": "Tom 4 Open Hit",
+                    "min_vel": 0,
+                    "max_vel": 70,
+                    "threshold": 10,
+                    "channel": 0,
+                    "port": "berdrums 1"
+                }
+            ]
         }
-    ]
+    }
 }

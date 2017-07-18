@@ -2,54 +2,111 @@
     "id": 1,
     "name": "basic",
     "description": "",
-    "pads":[
-        {
-            "id": 0,
-            "name": "LCYM",
-            "note": 70,
-            "threshold": 30,
-            "channel": 0,
-            "port": "berdrums 1"
+    "pads": {
+        "pad0": {
+            "notes": [
+                {
+                    "note": 49,
+                    "name": "LCYM",
+                    "min_vel": 10,
+                    "max_vel": 110,
+                    "threshold": 10,
+                    "channel": 0,
+                    "port": "berdrums 1"
+                },
+                {
+                    "note": 36,
+                    "name": "KICK",
+                    "min_vel": 50,
+                    "max_vel": 110,
+                    "threshold": 10,
+                    "channel": 0,
+                    "port": "berdrums 1"
+                }
+            ]
         },
-        {
-            "id": 1,
-            "name": "FTOM",
-            "note": 71,
-            "threshold": 30,
-            "channel": 0,
-            "port": "berdrums 1"
+        "pad1": {
+            "notes": [
+                {
+                    "note": 109,
+                    "name": "Snare RimShot db1",
+                    "min_vel": 0,
+                    "max_vel": 126,
+                    "threshold": 10,
+                    "channel": 0,
+                    "port": "berdrums 1"
+                }
+            ]
+        }, 
+        "pad2": {
+            "notes": [
+                {
+                    "note": 36,
+                    "name": "KICK",
+                    "min_vel": 10,
+                    "max_vel": 110,
+                    "threshold": 10,
+                    "channel": 0,
+                    "port": "berdrums 1"
+                },
+                {
+                    "note": 123,
+                    "name": "HH Closed2 Tip",
+                    "min_vel": 50,
+                    "max_vel": 110,
+                    "threshold": 10,
+                    "channel": 0,
+                    "port": "berdrums 1"
+                }
+            ]
         },
-        {
-            "id": 2,
-            "name": "KICK",
-            "note": 72,
-            "threshold": 30,
-            "channel": 0,
-            "port": "berdrums 1"
+        "pad3": {
+            "notes": [
+                {
+                    "note": 38,
+                    "name": "Snare Open Hit",
+                    "min_vel": 10,
+                    "max_vel": 110,
+                    "threshold": 30,
+                    "channel": 0,
+                    "port": "berdrums 1"
+                },
+                {
+                    "note": 123,
+                    "name": "HH Closed2 Tip",
+                    "min_vel": 50,
+                    "max_vel": 110,
+                    "threshold": 10,
+                    "channel": 0,
+                    "port": "berdrums 1"
+                }
+            ]
         },
-        {
-            "id": 3,
-            "name": "LTOM",
-            "note": 73,
-            "threshold": 100,
-            "channel": 0,
-            "port": "berdrums 1"
+        "pad4": {
+            "notes": [
+                {
+                    "note": 123,
+                    "name": "HH Closed2 Tip",
+                    "min_vel": 10,
+                    "max_vel": 110,
+                    "threshold": 30,
+                    "channel": 0,
+                    "port": "berdrums 1"
+                }
+            ]
         },
-        {
-            "id": 4,
-            "name": "SNARE",
-            "note": 74,
-            "threshold": 100,
-            "channel": 0,
-            "port": "berdrums 1"
-        },
-        {
-            "id": 5,
-            "name": "SNARE",
-            "note": 75,
-            "threshold": 50,
-            "channel": 0,
-            "port": "berdrums 1"
+        "pad5": {
+            "notes": [
+                {
+                    "note": 123,
+                    "name": "HH Closed2 Tip",
+                    "min_vel": 10,
+                    "max_vel": 110,
+                    "threshold": 30,
+                    "channel": 0,
+                    "port": "berdrums 1"
+                }
+            ]
         }
-    ]
+    }
 }

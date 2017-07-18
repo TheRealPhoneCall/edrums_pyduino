@@ -31,10 +31,16 @@ class Midi(object):
         # self.player = pygame.midi.Output(0)
         # self.player.set_instrument(instrument)
 
+    def map_velocity(self, msg_json):
+        # maps velocity values based on the min and max vals specified
+        return int((msg_json['velocity']-0) * (msg_json['max_vel']-msg_json['min_vel']) / 
+                   (127-0) + msg_json['min_vel'])
+
     def convert_midi_msg(self, msg_json):
-        timedelta=time.time() - self.start_time
+        timedelta = time.time() - self.start_time
+        velocity = self.map_velocity(msg_json)
         midi_msg = mido.Message(msg_json['cmd'], note=msg_json['note'], 
-                                velocity=msg_json['velocity'], time=timedelta) 
+                                velocity=velocity, time=timedelta) 
         return midi_msg
 
     def store_midi_msg(self, midi_msg):

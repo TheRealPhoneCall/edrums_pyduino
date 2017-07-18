@@ -28,21 +28,29 @@ def main(com_port, midi_port, baud_rate, pad_config):
 
             # get the note from pad_map function
             # TODO: Can be improved by not making this routine iterable
-            pad = pad_map(msg_recvd['pad'], pads_config)
-            midi_json = {
-                'cmd': msg_recvd['cmd'],
-                'note': pad['note'],
-                'velocity': msg_recvd['velocity']
-            }
+            # pad = pad_map(msg_recvd['pad'], pads_config)
+            pad = pads_config["pad" + str(msg_recvd['pad'])]
+            notes = pad["notes"]
 
-            # convert to mido msg
-            midi_msg = midi.convert_midi_msg(midi_json)
-            
-            # store midi msg then send to virtual port
-            midi.store_midi_msg(midi_msg)
-            midi.send_midi_msg(midi_msg)
+            # loop through the notes assigned on the pad
+            for note in notes: 
+                midi_json = {
+                    'cmd': msg_recvd['cmd'],
+                    'note': note['note'],
+                    'velocity': msg_recvd['velocity'],
+                    'min_vel': note['min_vel'],
+                    'max_vel': note['max_vel'],
+                    'threshold': note['threshold']
+                }
 
-            # end of block            
+                # convert to mido msg
+                midi_msg = midi.convert_midi_msg(midi_json)
+                
+                # store midi msg then send to virtual port
+                midi.store_midi_msg(midi_msg)
+                midi.send_midi_msg(midi_msg)
+
+                # end of block            
 
     except KeyboardInterrupt:
         print "Keyboard interrupted."
