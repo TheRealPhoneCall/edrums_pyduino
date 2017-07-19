@@ -22,7 +22,7 @@ def pads(pad_json="basic.json"):
     try:
         with open(pad_json_path) as config_file:
             json_file = json.load(config_file)
-            pads = json_file['pads']
+            pads = json_file['maps']
 
             return pads
 

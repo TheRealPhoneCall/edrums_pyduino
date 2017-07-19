@@ -69,9 +69,10 @@
 #define DEFAULT_MAX_READING 1024
 // pitch bend
 #define PBEND_PIN 5
-#define PBEND_CMD 2
-#define PBEND_STEP 20
+#define PBEND_CMD 3
+#define PBEND_STEP 100
 // control change
+#define CC_CMD 2
 #define CC_NEXT_PIN 12
 #define CC_NEXT_NUMBER 20
 #define CC_BACK_PIN 13
@@ -109,6 +110,8 @@ boolean padReady[NUM_PIEZOS];
 unsigned short padReadyVelocity[NUM_PIEZOS];
 boolean isLastPeakZeroed[NUM_PIEZOS];
 
+unsigned short oldPbendVal;
+
 unsigned long lastPeakTime[NUM_PIEZOS];
 unsigned long lastNoteTime[NUM_PIEZOS];
 
@@ -135,7 +138,7 @@ void midiPitchBend(byte pitchLow, byte pitchHigh)
 
 void midiControlChange(byte ccNumber, byte val)
 {
-    Serial.println(PBEND_CMD);
+    Serial.println(CC_CMD);
     Serial.println(ccNumber);
     Serial.println(val);
 }
@@ -251,7 +254,7 @@ void readPadHits(){
 void readPitchBends(){
   //get pitch bend value
   unsigned short newPbendVal = analogRead(PBEND_PIN);
-  if (newPbendVal - oldPBendVal >= PBEND_STEP) {
+  if (newPbendVal - oldPbendVal >= PBEND_STEP) {
     long pitchLow, pitchHigh;
     if (newPbendVal < 512) {
       pitchLow = map(newPbendVal, 0, 511, -8192, 0);
@@ -270,15 +273,15 @@ void readControlChanges(){
   //get control change values
   unsigned short ccNumber, ccVal;
   int btnNextPadMap = digitalRead(CC_NEXT_PIN);
-  int btnPrevPadMap = digitalRead(CC_PREV_PIN);
+  int btnPrevPadMap = digitalRead(CC_BACK_PIN);
 
-  if (btnNextPadMap) {
+  if (btnNextPadMap == HIGH) {
     ccNumber = CC_NEXT_NUMBER;
     ccVal = 0;
     midiControlChange(ccNumber, 0);
   }
-  if (btnPrevPadMap) {
-    ccNumber = CC_PREV_NUMBER;
+  if (btnPrevPadMap == HIGH) {
+    ccNumber = CC_BACK_NUMBER;
     ccVal = 0;
     midiControlChange(ccNumber, 0);
   }
@@ -338,5 +341,5 @@ void loop()
 {  
   readPadHits();
   readPitchBends();
-  readControlChanges();  
+  // readControlChanges();  
 }

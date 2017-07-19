@@ -15,38 +15,41 @@ class Serial(object):
         byte1 = self.serial.readline()
         byte2 = self.serial.readline()
         byte3 = self.serial.readline()
+        byte1 = int(byte1)
+        byte2 = int(byte2)
+        byte3 = int(byte3)
+
+        print byte1, byte2, byte3
+        
         if byte1 == 0: # note_off command
             serial_msg = {
                 'cmd': 'note_off',
-                'pad': int(byte2),
-                'velocity': int(byte3)
+                'pad': byte2,
+                'velocity': byte3
             }
         elif byte1 == 1: # note_on command
             serial_msg = {
                 'cmd': 'note_on',
-                'pad': int(byte2),
-                'velocity': int(byte3)
+                'pad': byte2,
+                'velocity': byte3
             }
         elif byte1 == 2: # control change command
             serial_msg = {
                 'cmd': 'control_change',
-                'cc_number': int(byte2),
-                'cc_val': int(byte3) 
+                'control': byte2,
+                'value': byte3 
             }
         elif byte1 == 3: # pitch bend command
             serial_msg = {
                 'cmd': 'pitchwheel',
-                'pitch': int(byte2) if (byte2) else int(byte3),
+                'pitch': byte2 if (byte2) else byte3,
             }
         else:
-            pass
+            serial_msg = {}
         return serial_msg
-
-    def json_msg(self, serial_msg):
-        
 
     def quit(self):
         print "Serial reading is now terminated."
 
     def __str__(self):
-		return "{}".format(self.serial)
+        return "{}".format(self.serial)

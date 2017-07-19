@@ -28,6 +28,9 @@ def main(com_port, midi_port, baud_rate, pad_config):
             msg_recvd = serial.read_msg()
             print "msg_recvd", msg_recvd
 
+            if msg_recvd == {}:
+                continue
+
             # if msg is control change, program change, or pitch bend
             if msg_recvd['cmd'] in ['control_change', 'program_change',
                                     'pitchwheel']:
@@ -37,14 +40,14 @@ def main(com_port, midi_port, baud_rate, pad_config):
 
                 # for control_change, switch the value of the pad_maps
                 if msg_recvd['cmd'] == 'control_change':
-                    if msg_recvd['cc_number'] == 20: # next pad map
+                    if msg_recvd['control'] == 20: # next pad map
                         try:
                             current_map += 1
                             pad_map = pad_maps[current_map]
                         except:
                             current_map = 0
                             pad_map = pad_maps[0]
-                    elif msg_recvd['cc_number'] == 21: # prev pad map
+                    elif msg_recvd['control'] == 21: # prev pad map
                         try:
                             current_map -= 1
                             pad_map = pad_maps[current_map]

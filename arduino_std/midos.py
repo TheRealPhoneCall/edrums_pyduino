@@ -45,8 +45,11 @@ class Midi(object):
         elif msg_json['cmd'] == 'pitchwheel':
             midi_msg = mido.Message(msg_json['cmd'], pitch=msg_json['pitch'], 
                                     time=timedelta)
+        elif msg_json['cmd'] == 'control_change':
+            midi_msg = mido.Message(msg_json['cmd'], control=msg_json['control'], 
+                                    time=timedelta)
         else:
-            pass
+            midi_msg = mido.Message()
         return midi_msg
 
     def store_midi_msg(self, midi_msg):
