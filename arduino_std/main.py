@@ -19,7 +19,9 @@ from settings import pads, pad_map
 def main(com_port, midi_port, baud_rate, pad_config):
     serial = Serial(com_port=com_port, serial_rate=baud_rate)
     midi = Midi(virtual_port=midi_port)
-    pads_config = pads(pad_config)
+    current_map = 0
+    pad_maps = pads(pad_config)
+    pad_map = pad_maps[current_map]
     try:
         while True:
             # read serial first
@@ -32,11 +34,27 @@ def main(com_port, midi_port, baud_rate, pad_config):
                 midi_msg = midi.convert_midi_msg(msg_recvd)
                 midi.store_midi_msg(midi_msg)
                 midi.send_midi_msg(midi_msg)
-                continue
+
+                # for control_change, switch the value of the pad_maps
+                if msg_recvd['cmd'] == 'control_change':
+                    if msg_recvd['cc_number'] == 20: # next pad map
+                        try:
+                            current_map += 1
+                            pad_map = pad_maps[current_map]
+                        except:
+                            current_map = 0
+                            pad_map = pad_maps[0]
+                    elif msg_recvd['cc_number'] == 21: # prev pad map
+                        try:
+                            current_map -= 1
+                            pad_map = pad_maps[current_map]
+                        except:
+                            current_map = len(pad_maps) - 1
+                            pad_map = pad_maps[current_map]
             # else it's a note_on/note_off msg
             else:
                 # get the note from pad_map function
-                pad = pads_config["pad" + str(msg_recvd['pad'])]
+                pad = pad_map["pad" + str(msg_recvd['pad'])]
                 notes = pad["notes"]
 
                 # loop through the notes assigned on the pad

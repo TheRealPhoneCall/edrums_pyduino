@@ -28,7 +28,11 @@ class Serial(object):
                 'velocity': int(byte3)
             }
         elif byte1 == 2: # control change command
-            pass
+            serial_msg = {
+                'cmd': 'control_change',
+                'cc_number': int(byte2),
+                'cc_val': int(byte3) 
+            }
         elif byte1 == 3: # pitch bend command
             serial_msg = {
                 'cmd': 'pitchwheel',

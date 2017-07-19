@@ -61,14 +61,21 @@
 #define SNARE2_PAD 1 
 
 //MIDI defines
+// note on/off
 #define NOTE_ON_CMD 1
 #define NOTE_OFF_CMD 0
-#define PBEND_CMD 2
-#define PBEND_STEP 20
 #define MAX_MIDI_VELOCITY 127
 #define DEFAULT_MIN_READING 0
 #define DEFAULT_MAX_READING 1024
-
+// pitch bend
+#define PBEND_PIN 5
+#define PBEND_CMD 2
+#define PBEND_STEP 20
+// control change
+#define CC_NEXT_PIN 12
+#define CC_NEXT_NUMBER 20
+#define CC_BACK_PIN 13
+#define CC_BACK_NUMBER 21
 //MIDI baud rate
 #define SERIAL_RATE 38400
 
@@ -105,45 +112,32 @@ boolean isLastPeakZeroed[NUM_PIEZOS];
 unsigned long lastPeakTime[NUM_PIEZOS];
 unsigned long lastNoteTime[NUM_PIEZOS];
 
-// void midiNoteOn(unsigned short pad, unsigned short midiVelocity)
-// {
-//     String strSerialMsg = "";
-//     String strNoteOnCmd = String(NOTE_ON_CMD);  
-//     String strPad = String(pad);  
-//     String strVelocity = String(midiVelocity);
-//     strSerialMsg = strNoteOnCmd + "." + strPad + "." + strVelocity;
-//     Serial.println(strSerialMsg);
-// }
-
-// void midiNoteOff(unsigned short pad, unsigned short midiVelocity)
-// {
-//     String strSerialMsg = "";    
-//     String strNoteOffCmd = String(NOTE_OFF_CMD);  
-//     String strPad = String(pad);  
-//     String strVelocity = String(midiVelocity);
-//     strSerialMsg = strNoteOffCmd + "." + strPad + "." + strVelocity;
-//     Serial.println(strSerialMsg);
-// }
-
-void midiNoteOn(byte pad, byte midiVelocity)
+void midiNoteOn(byte pad, byte velocity)
 {
     Serial.println(NOTE_ON_CMD);  
     Serial.println(pad);  
-    Serial.println(midiVelocity);
+    Serial.println(velocity);
 }
 
-void midiNoteOff(byte pad, byte midiVelocity)
+void midiNoteOff(byte pad, byte velocity)
 {
     Serial.println(NOTE_OFF_CMD);  
     Serial.println(pad);  
-    Serial.println(midiVelocity);
+    Serial.println(velocity);
 }
 
-void midiPitchBend(byte pad, byte )
+void midiPitchBend(byte pitchLow, byte pitchHigh)
 {
     Serial.println(PBEND_CMD);
-    Serial.println(pad);
-    Serial.println(midiPitchBend);
+    Serial.println(pitchLow);
+    Serial.println(pitchHigh);
+}
+
+void midiControlChange(byte ccNumber, byte val)
+{
+    Serial.println(PBEND_CMD);
+    Serial.println(ccNumber);
+    Serial.println(val);
 }
 
 void padFire(unsigned short pad, unsigned short velocity)
@@ -197,58 +191,7 @@ void recordNewPeak(short slot, short newPeak)
   if(currentPeakIndex[slot] == PEAK_BUFFER_SIZE) currentPeakIndex[slot] = 0;  
 }
 
-void setup()
-{
-  Serial.begin(SERIAL_RATE);
-
-  while (!Serial);
-  
-  //initialize globals
-  for(short i=0; i<NUM_PIEZOS; ++i)
-  {
-    currentSignalIndex[i] = 0;
-    currentPeakIndex[i] = 0;
-    memset(signalBuffer[i],0,sizeof(signalBuffer[i]));
-    memset(peakBuffer[i],0,sizeof(peakBuffer[i]));
-    padReady[i] = false;
-    padReadyVelocity[i] = 0;
-    isLastPeakZeroed[i] = true;
-    lastPeakTime[i] = 0;
-    lastNoteTime[i] = 0;    
-    slotMap[i] = START_SLOT + i;
-  }
-  
-  thresholdMap[0] = PAD0_THRESHOLD;
-  thresholdMap[1] = PAD1_THRESHOLD;
-  thresholdMap[2] = PAD2_THRESHOLD;
-  thresholdMap[3] = PAD3_THRESHOLD;
-  thresholdMap[4] = PAD4_THRESHOLD;
-  thresholdMap[5] = PAD5_THRESHOLD; 
-
-  minReadingMap[0] = PAD0_MIN;
-  minReadingMap[1] = PAD1_MIN;
-  minReadingMap[2] = PAD2_MIN;
-  minReadingMap[3] = PAD3_MIN;
-  minReadingMap[4] = PAD4_MIN;
-  minReadingMap[5] = PAD5_MIN; 
-
-  maxReadingMap[0] = PAD0_MAX;
-  maxReadingMap[1] = PAD1_MAX;
-  maxReadingMap[2] = PAD2_MAX;
-  maxReadingMap[3] = PAD3_MAX;
-  maxReadingMap[4] = PAD4_MAX;
-  maxReadingMap[5] = PAD5_MAX;
-  
-  padMap[0] = PAD0;
-  padMap[1] = PAD1;
-  padMap[2] = PAD2;
-  padMap[3] = PAD3;
-  padMap[4] = PAD4;
-  padMap[5] = PAD5;  
-}
-
-void loop()
-{
+void readPadHits(){
   unsigned long currentTime = millis();
   
   for(short i=0; i<NUM_PIEZOS; ++i)
@@ -302,12 +245,98 @@ void loop()
       currentSignalIndex[i] = 0;
     }
     
-    //get pitch bend value
-    unsigned short newPbendVal = analogRead(7);
-    newPbendVal = map(newPbendVal, 0, 1023, 0, 127);
-    if (newPbendVal - oldPBendVal >= PBEND_STEP) {
-      midiPitchBend(newPbendVal);
-    }
-    oldPbendVal = newPbendVal;
   }
+}
+
+void readPitchBends(){
+  //get pitch bend value
+  unsigned short newPbendVal = analogRead(PBEND_PIN);
+  if (newPbendVal - oldPBendVal >= PBEND_STEP) {
+    long pitchLow, pitchHigh;
+    if (newPbendVal < 512) {
+      pitchLow = map(newPbendVal, 0, 511, -8192, 0);
+      pitchHigh = 0;
+    } else {
+      pitchLow = 0;
+      pitchHigh = map(newPbendVal, 512, 1023, 0, 8192);
+    }
+    
+    midiPitchBend(pitchLow, pitchHigh);
+  }
+  oldPbendVal = newPbendVal;
+}
+
+void readControlChanges(){
+  //get control change values
+  unsigned short ccNumber, ccVal;
+  int btnNextPadMap = digitalRead(CC_NEXT_PIN);
+  int btnPrevPadMap = digitalRead(CC_PREV_PIN);
+
+  if (btnNextPadMap) {
+    ccNumber = CC_NEXT_NUMBER;
+    ccVal = 0;
+    midiControlChange(ccNumber, 0);
+  }
+  if (btnPrevPadMap) {
+    ccNumber = CC_PREV_NUMBER;
+    ccVal = 0;
+    midiControlChange(ccNumber, 0);
+  }
+}
+
+void setup()
+{
+  Serial.begin(SERIAL_RATE);
+
+  while (!Serial);
+  
+  //initialize globals
+  for(short i=0; i<NUM_PIEZOS; ++i)
+  {
+    currentSignalIndex[i] = 0;
+    currentPeakIndex[i] = 0;
+    memset(signalBuffer[i],0,sizeof(signalBuffer[i]));
+    memset(peakBuffer[i],0,sizeof(peakBuffer[i]));
+    padReady[i] = false;
+    padReadyVelocity[i] = 0;
+    isLastPeakZeroed[i] = true;
+    lastPeakTime[i] = 0;
+    lastNoteTime[i] = 0;    
+    slotMap[i] = START_SLOT + i;
+  }
+  
+  thresholdMap[0] = PAD0_THRESHOLD;
+  thresholdMap[1] = PAD1_THRESHOLD;
+  thresholdMap[2] = PAD2_THRESHOLD;
+  thresholdMap[3] = PAD3_THRESHOLD;
+  thresholdMap[4] = PAD4_THRESHOLD;
+  thresholdMap[5] = PAD5_THRESHOLD; 
+
+  minReadingMap[0] = PAD0_MIN;
+  minReadingMap[1] = PAD1_MIN;
+  minReadingMap[2] = PAD2_MIN;
+  minReadingMap[3] = PAD3_MIN;
+  minReadingMap[4] = PAD4_MIN;
+  minReadingMap[5] = PAD5_MIN; 
+
+  maxReadingMap[0] = PAD0_MAX;
+  maxReadingMap[1] = PAD1_MAX;
+  maxReadingMap[2] = PAD2_MAX;
+  maxReadingMap[3] = PAD3_MAX;
+  maxReadingMap[4] = PAD4_MAX;
+  maxReadingMap[5] = PAD5_MAX;
+  
+  padMap[0] = PAD0;
+  padMap[1] = PAD1;
+  padMap[2] = PAD2;
+  padMap[3] = PAD3;
+  padMap[4] = PAD4;
+  padMap[5] = PAD5;  
+}
+
+void loop()
+{  
+  readPadHits();
+  readPitchBends();
+  readControlChanges();  
 }
