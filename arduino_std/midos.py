@@ -38,9 +38,15 @@ class Midi(object):
 
     def convert_midi_msg(self, msg_json):
         timedelta = time.time() - self.start_time
-        velocity = self.map_velocity(msg_json)
-        midi_msg = mido.Message(msg_json['cmd'], note=msg_json['note'], 
-                                velocity=velocity, time=timedelta) 
+        if msg_json['cmd'] in ['note_on', 'note_off']:
+            velocity = self.map_velocity(msg_json)
+            midi_msg = mido.Message(msg_json['cmd'], note=msg_json['note'], 
+                                    velocity=velocity, time=timedelta) 
+        elif msg_json['cmd'] == 'pitchwheel':
+            midi_msg = mido.Message(msg_json['cmd'], pitch=msg_json['pitch'], 
+                                    time=timedelta)
+        else:
+            pass
         return midi_msg
 
     def store_midi_msg(self, midi_msg):
@@ -88,3 +94,4 @@ class Midi(object):
         # delete player object
         # del self.player
         # pygame.midi.quit()
+

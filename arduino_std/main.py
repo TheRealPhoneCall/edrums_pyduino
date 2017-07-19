@@ -26,29 +26,38 @@ def main(com_port, midi_port, baud_rate, pad_config):
             msg_recvd = serial.read_msg()
             print "msg_recvd", msg_recvd
 
-            # get the note from pad_map function
-            pad = pads_config["pad" + str(msg_recvd['pad'])]
-            notes = pad["notes"]
-
-            # loop through the notes assigned on the pad
-            for note in notes: 
-                midi_json = {
-                    'cmd': msg_recvd['cmd'],
-                    'note': note['note'],
-                    'velocity': msg_recvd['velocity'],
-                    'min_vel': note['min_vel'],
-                    'max_vel': note['max_vel'],
-                    'threshold': note['threshold']
-                }
-
-                # convert to mido msg
-                midi_msg = midi.convert_midi_msg(midi_json)
-                
-                # store midi msg then send to virtual port
+            # if msg is control change, program change, or pitch bend
+            if msg_recvd['cmd'] in ['control_change', 'program_change',
+                                    'pitchwheel']:
+                midi_msg = midi.convert_midi_msg(msg_recvd)
                 midi.store_midi_msg(midi_msg)
                 midi.send_midi_msg(midi_msg)
+                continue
+            # else it's a note_on/note_off msg
+            else:
+                # get the note from pad_map function
+                pad = pads_config["pad" + str(msg_recvd['pad'])]
+                notes = pad["notes"]
 
-                # end of block            
+                # loop through the notes assigned on the pad
+                for note in notes: 
+                    midi_json = {
+                        'cmd': msg_recvd['cmd'],
+                        'note': note['note'],
+                        'velocity': msg_recvd['velocity'],
+                        'min_vel': note['min_vel'],
+                        'max_vel': note['max_vel'],
+                        'threshold': note['threshold']
+                    }
+
+                    # convert to mido msg
+                    midi_msg = midi.convert_midi_msg(midi_json)
+                    
+                    # store midi msg then send to virtual port
+                    midi.store_midi_msg(midi_msg)
+                    midi.send_midi_msg(midi_msg)
+
+                    # end of block            
 
     except KeyboardInterrupt:
         print "Keyboard interrupted."

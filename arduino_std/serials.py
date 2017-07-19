@@ -32,23 +32,14 @@ class Serial(object):
         elif byte1 == 3: # pitch bend command
             serial_msg = {
                 'cmd': 'pitchwheel',
-                'val1': int(byte2),
-                'val2': int(byte3)
+                'pitch': int(byte2) if (byte2) else int(byte3),
             }
         else:
             pass
         return serial_msg
 
-    def parse_msg(self, serial_msg):
-        try:
-            parsed_msg = {
-                'cmd': 'note_on' if (serial_msg[0] == 1) else 'note_off',
-                'pad': int(serial_msg[1]),
-                'velocity': int(serial_msg[2])
-            }
-            return parsed_msg
-        except IndexError:
-            return None
+    def json_msg(self, serial_msg):
+        
 
     def quit(self):
         print "Serial reading is now terminated."
