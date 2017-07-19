@@ -63,6 +63,8 @@
 //MIDI defines
 #define NOTE_ON_CMD 1
 #define NOTE_OFF_CMD 0
+#define PBEND_CMD 2
+#define PBEND_STEP 20
 #define MAX_MIDI_VELOCITY 127
 #define DEFAULT_MIN_READING 0
 #define DEFAULT_MAX_READING 1024
@@ -128,8 +130,6 @@ void midiNoteOn(byte pad, byte midiVelocity)
     Serial.println(NOTE_ON_CMD);  
     Serial.println(pad);  
     Serial.println(midiVelocity);
-    // strSerialMsg = strNoteOnCmd + "." + strPad + "." + strVelocity;
-    // Serial.println(strSerialMsg);
 }
 
 void midiNoteOff(byte pad, byte midiVelocity)
@@ -137,8 +137,13 @@ void midiNoteOff(byte pad, byte midiVelocity)
     Serial.println(NOTE_OFF_CMD);  
     Serial.println(pad);  
     Serial.println(midiVelocity);
-    // strSerialMsg = strNoteOffCmd + "." + strPad + "." + strVelocity;
-    // Serial.println(strSerialMsg);
+}
+
+void midiPitchBend(byte pad, byte )
+{
+    Serial.println(PBEND_CMD);
+    Serial.println(pad);
+    Serial.println(midiPitchBend);
 }
 
 void padFire(unsigned short pad, unsigned short velocity)
@@ -252,6 +257,7 @@ void loop()
     unsigned short newSignal = analogRead(slotMap[i]);
     newSignal = map(newSignal, DEFAULT_MIN_READING, maxReadingMap[i], 0, 127);
     signalBuffer[i][currentSignalIndex[i]] = newSignal;
+
     //if new signal is 0
     if(newSignal < thresholdMap[i])
     {
@@ -290,8 +296,18 @@ void loop()
       }
   
     }
-        
+       
     currentSignalIndex[i]++;
-    if(currentSignalIndex[i] == SIGNAL_BUFFER_SIZE) currentSignalIndex[i] = 0;
+    if(currentSignalIndex[i] == SIGNAL_BUFFER_SIZE) {
+      currentSignalIndex[i] = 0;
+    }
+    
+    //get pitch bend value
+    unsigned short newPbendVal = analogRead(7);
+    newPbendVal = map(newPbendVal, 0, 1023, 0, 127);
+    if (newPbendVal - oldPBendVal >= PBEND_STEP) {
+      midiPitchBend(newPbendVal);
+    }
+    oldPbendVal = newPbendVal;
   }
 }

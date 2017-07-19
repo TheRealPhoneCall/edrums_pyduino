@@ -12,14 +12,31 @@ class Serial(object):
         print self.serial   
 
     def read_msg(self):        
-        cmd = self.serial.readline()
-        pad = self.serial.readline()
-        vel = self.serial.readline()
-        serial_msg = {
-            'cmd': 'note_on' if (int(cmd) == 1) else 'note_off',
-            'pad': int(pad),
-            'velocity': int(vel)
-        }
+        byte1 = self.serial.readline()
+        byte2 = self.serial.readline()
+        byte3 = self.serial.readline()
+        if byte1 == 0: # note_off command
+            serial_msg = {
+                'cmd': 'note_off',
+                'pad': int(byte2),
+                'velocity': int(byte3)
+            }
+        elif byte1 == 1: # note_on command
+            serial_msg = {
+                'cmd': 'note_on',
+                'pad': int(byte2),
+                'velocity': int(byte3)
+            }
+        elif byte1 == 2: # control change command
+            pass
+        elif byte1 == 3: # pitch bend command
+            serial_msg = {
+                'cmd': 'pitchwheel',
+                'val1': int(byte2),
+                'val2': int(byte3)
+            }
+        else:
+            pass
         return serial_msg
 
     def parse_msg(self, serial_msg):

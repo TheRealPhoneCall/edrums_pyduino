@@ -27,8 +27,6 @@ def main(com_port, midi_port, baud_rate, pad_config):
             print "msg_recvd", msg_recvd
 
             # get the note from pad_map function
-            # TODO: Can be improved by not making this routine iterable
-            # pad = pad_map(msg_recvd['pad'], pads_config)
             pad = pads_config["pad" + str(msg_recvd['pad'])]
             notes = pad["notes"]
 
