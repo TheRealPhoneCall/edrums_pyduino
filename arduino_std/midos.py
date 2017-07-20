@@ -65,8 +65,8 @@ class Midi(object):
             outport = mido.open_output(port)
             outport.send(midi_msg)
         
-        print "sent to vitual port: " + port
-        print "midi msg: ", midi_msg
+        print "sent to '%s': \t %s" %(port, midi_msg)
+        # print "midi msg: ", midi_msg
 
     def recv_midi_msg(self, midi_msg, port=MIDI_PORT):
         # TODO: Explore MIDI reading from bytes of data
@@ -77,8 +77,8 @@ class Midi(object):
             inport = mido.open_input(port)
             msg = inport.receive(midi_msg)
         
-        print "recvd from vitual port: " + port
-        print "midi msg: ", midi_msg
+        print "recvd from '%s': \t %s" %(port, midi_msg)
+        # print "midi msg: ", midi_msg
 
     # def play_note(self, cmd, note, velocity):
     #     if cmd == 'note_on':

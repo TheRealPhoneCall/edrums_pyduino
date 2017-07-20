@@ -61,6 +61,8 @@
 #define SNARE2_PAD 1 
 
 //MIDI defines
+// MIDI baud rate
+#define SERIAL_RATE 31250
 // note on/off
 #define NOTE_ON_CMD 1
 #define NOTE_OFF_CMD 0
@@ -68,17 +70,19 @@
 #define DEFAULT_MIN_READING 0
 #define DEFAULT_MAX_READING 1024
 // pitch bend
-#define PBEND_PIN 5
+#define PBEND_PIN 0
 #define PBEND_CMD 3
 #define PBEND_STEP 100
 // control change
 #define CC_CMD 2
-#define CC_NEXT_PIN 12
+#define CC_NEXT_PIN 4
 #define CC_NEXT_NUMBER 20
-#define CC_BACK_PIN 13
+#define CC_BACK_PIN 2
 #define CC_BACK_NUMBER 21
-//MIDI baud rate
-#define SERIAL_RATE 38400
+// buffers
+unsigned short oldPbendVal;
+bool btnNextPadMap_isClicked = false;
+bool btnBackPadMap_isClicked = false;
 
 //Program defines
 //ALL TIME MEASURED IN MILLISECONDS
@@ -109,8 +113,6 @@ unsigned short peakBuffer[NUM_PIEZOS][PEAK_BUFFER_SIZE];
 boolean padReady[NUM_PIEZOS];
 unsigned short padReadyVelocity[NUM_PIEZOS];
 boolean isLastPeakZeroed[NUM_PIEZOS];
-
-unsigned short oldPbendVal;
 
 unsigned long lastPeakTime[NUM_PIEZOS];
 unsigned long lastNoteTime[NUM_PIEZOS];
@@ -254,7 +256,7 @@ void readPadHits(){
 void readPitchBends(){
   //get pitch bend value
   unsigned short newPbendVal = analogRead(PBEND_PIN);
-  if (newPbendVal - oldPbendVal >= PBEND_STEP) {
+  if ((newPbendVal - oldPbendVal == PBEND_STEP) || (oldPbendVal - newPbendVal == PBEND_STEP)) {
     long pitchLow, pitchHigh;
     if (newPbendVal < 512) {
       pitchLow = map(newPbendVal, 0, 511, -8192, 0);
@@ -265,26 +267,38 @@ void readPitchBends(){
     }
     
     midiPitchBend(pitchLow, pitchHigh);
-  }
-  oldPbendVal = newPbendVal;
+    
+    oldPbendVal = newPbendVal;
+  } 
 }
 
 void readControlChanges(){
   //get control change values
   unsigned short ccNumber, ccVal;
   int btnNextPadMap = digitalRead(CC_NEXT_PIN);
-  int btnPrevPadMap = digitalRead(CC_BACK_PIN);
+  int btnBackPadMap = digitalRead(CC_BACK_PIN);
 
-  if (btnNextPadMap == HIGH) {
+  // fire "next pad map" cc msg after button press
+  if ((btnNextPadMap_isClicked) && (btnNextPadMap == LOW)){
     ccNumber = CC_NEXT_NUMBER;
     ccVal = 0;
-    midiControlChange(ccNumber, 0);
+    midiControlChange(ccNumber, ccVal);
+    delay(10);
+    btnNextPadMap_isClicked = false;
+  } else {
+    if (btnNextPadMap == HIGH) btnNextPadMap_isClicked = true;
   }
-  if (btnPrevPadMap == HIGH) {
+
+  // fire "previous pad map" cc msg after button press
+  if ((btnBackPadMap_isClicked) && (btnBackPadMap == HIGH)){
     ccNumber = CC_BACK_NUMBER;
     ccVal = 0;
-    midiControlChange(ccNumber, 0);
-  }
+    midiControlChange(ccNumber, ccVal);
+    delay(10);
+    btnBackPadMap_isClicked = false;
+  } else {
+    if (btnBackPadMap == LOW) btnBackPadMap_isClicked = true;
+  }  
 }
 
 void setup()
@@ -335,6 +349,10 @@ void setup()
   padMap[3] = PAD3;
   padMap[4] = PAD4;
   padMap[5] = PAD5;  
+
+  pinMode(CC_BACK_PIN, INPUT);
+  pinMode(CC_NEXT_PIN, INPUT);
+  pinMode(PBEND_PIN, INPUT);
 }
 
 void loop()

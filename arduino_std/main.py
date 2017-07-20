@@ -1,7 +1,7 @@
 """
     Sample Runs:
-        python main.py -t arduino_std -cp COM6 -br 38400 -pc basic.json
-        python arduino_std\main.py -cp COM6 -br 38400 -pc basic.json
+        python main.py -t arduino_std -cp COM6 -br 31250 -pc basic.json
+        python arduino_std\main.py -cp COM6 -br 31250 -pc basic.json
 """
 
 import sys
@@ -26,8 +26,6 @@ def main(com_port, midi_port, baud_rate, pad_config):
         while True:
             # read serial first
             msg_recvd = serial.read_msg()
-            print "msg_recvd", msg_recvd
-
             if msg_recvd == {}:
                 continue
 

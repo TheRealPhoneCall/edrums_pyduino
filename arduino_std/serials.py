@@ -19,7 +19,7 @@ class Serial(object):
         byte2 = int(byte2)
         byte3 = int(byte3)
 
-        print byte1, byte2, byte3
+        # print byte1, byte2, byte3
         
         if byte1 == 0: # note_off command
             serial_msg = {
