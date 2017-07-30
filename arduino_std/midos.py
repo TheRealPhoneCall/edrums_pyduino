@@ -33,8 +33,11 @@ class Midi(object):
 
     def map_velocity(self, msg_json):
         # maps velocity values based on the min and max vals specified
-        return int((msg_json['velocity']-0) * (msg_json['max_vel']-msg_json['min_vel']) / 
-                   (127-0) + msg_json['min_vel'])
+        if msg_json['velocity'] < msg_json['threshold']:
+            return 0
+        else:
+            return int((msg_json['velocity']-0) * (msg_json['max_vel']-msg_json['min_vel']) / 
+                    (127-0) + msg_json['min_vel'])
 
     def convert_midi_msg(self, msg_json):
         timedelta = time.time() - self.start_time
@@ -66,7 +69,6 @@ class Midi(object):
             outport.send(midi_msg)
         
         print "sent to '%s': \t %s" %(port, midi_msg)
-        # print "midi msg: ", midi_msg
 
     def recv_midi_msg(self, midi_msg, port=MIDI_PORT):
         # TODO: Explore MIDI reading from bytes of data
@@ -78,7 +80,6 @@ class Midi(object):
             msg = inport.receive(midi_msg)
         
         print "recvd from '%s': \t %s" %(port, midi_msg)
-        # print "midi msg: ", midi_msg
 
     # def play_note(self, cmd, note, velocity):
     #     if cmd == 'note_on':

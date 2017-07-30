@@ -59,7 +59,52 @@ class SlapEvent(object):
         return msg_json
 
     def callback(self, data, frame_count, time_info, status_flag):
-        data_array = np.fromString(data, dtype=np.int16)
+        data_array = np.fromstring(data, dtype=np.int16)
         self.spectral_analyzer.process_data(data_array)
 
         return (data, paContinue)
+
+class StreamProcessor(object):
+    FREQS_BUF_SIZE = 11
+
+    def __init__(self):
+        self.spectral_analyser = SpectralAnalyser(
+            window_size=WINDOW_SIZE,
+            segments_buf=RING_BUFFER_SIZE
+        )
+
+    def run(self):
+        pya = PyAudio()
+        self.stream = pya.open(
+            format=paInt16,
+            channels=1,
+            rate=SAMPLE_RATE,
+            input=True,
+            frames_per_buffer=WINDOW_SIZE,
+            stream_callback=self.process_frame,
+        )
+        self.stream.start_stream()
+
+        while self.stream.is_active() and not raw_input():
+            time.sleep(0.1)
+
+        self.stream.stop_stream()
+        self.stream.close()
+        pya.terminate()
+
+    def process_frame(self, data, frame_count, time_info, status_flag):
+        # get data_array from frame
+        data_array = np.fromstring(data, dtype=np.int16)
+        # get fundamental frequency
+        freq0 = self.spectral_analyser.process_data(data_array)
+
+        # if fundamental frequency is detected, play a note
+        if freq0:
+            # Onset detected
+            print("Note detected; fundamental frequency: ", freq0)
+            midi_note_value = int(hz_to_midi(freq0)[0])
+            print("Midi note value: ", midi_note_value)
+            note = RTNote(midi_note_value, 100, 0.5)
+            self.synth.play_note(note)
+        return (data, paContinue)
+
