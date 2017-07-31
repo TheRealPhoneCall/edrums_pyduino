@@ -1,3 +1,7 @@
+'''
+    Major Credits to Anna Wszeborowska
+'''
+
 import time
 import itertools
 from collections import deque
@@ -5,14 +9,12 @@ from collections import deque
 import numpy as np
 from pyaudio import PyAudio, paContinue, paInt16
 
-from app_setup import (
+from settings import (
     RING_BUFFER_SIZE,
     SAMPLE_RATE,
     THRESHOLD_MULTIPLIER,
     THRESHOLD_WINDOW_SIZE,
     WINDOW_SIZE)
-from midi import hz_to_midi, RTNote
-# from synth import FluidSynth
 
 
 class SpectralAnalyser(object):

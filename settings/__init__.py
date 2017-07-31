@@ -29,6 +29,7 @@ RING_BUFFER_SIZE = 40
 FRAMES_PER_BUFFER = 4096
 SAMPLE_RATE = 44100
 
+# for drum pad triggers
 def pads(pad_json="basic.json"):
     # Initialize values
     pad_json_path = "settings\pad_maps\%s" %str(pad_json)
@@ -44,10 +45,20 @@ def pads(pad_json="basic.json"):
 
     return PADS
 
-def pad_map(pad_id, pads):
-    for pad in pads:
-        if pad_id == pad['id']:
-            return pad
-    return {}
+# for layered triggers
+def slap_freqs(slap_freq_json="basic.json"):
+    # Initialize values
+    slap_freq_json_path = "settings\slap_freq_maps\%s" %str(slap_freq_json)
+    try:
+        with open(slap_freq_json_path) as config_file:
+            json_file = json.load(config_file)
+            slap_freqs = json_file['maps']
+
+            return slap_freqs
+
+    except Exception as e:
+        print type(e).__name__ + ': ' + str(e)
+
+    return PADS
 
 

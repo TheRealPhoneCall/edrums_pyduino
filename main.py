@@ -26,13 +26,16 @@ def arg_parser():
                         help='the pad configuration json file (default %(default))')
     parser.add_argument('-cp', '--com-port', type=str, default='COM5',
                         help='the serial port to communicate with arduino (default %(default))')
-    parser.add_argument('-br', '--baud-rate', type=int, default=115200,
+    parser.add_argument('-br', '--baud-rate', type=int, default=31250,
                         help='the baud rate to communicate with arduino (default %(default))')    
     parser.add_argument('-lmp', '--list-midi-ports', action='store_true',
                         help='list midi output ports and exit')
     parser.add_argument('-mp', '--midi-port', type=str, default=u"berdrums 1",
                         help='the virtual midi port to send output msg (default %(default))')
 
+    # layered triggers
+    parser.add_argument('-fc', '--freq-config', type=str, default=u"basic.json",
+                        help='the slap frequency configuration json file (default %(default))')
     return parser
 
 def main():
@@ -61,7 +64,7 @@ def main():
 
     if args.type == 'layered_triggers':
         import layered_triggers.main as layered_triggers 
-        layered_triggers.main(args.com_port, args.midi_port, args.pad_config)
+        layered_triggers.main(args.com_port, args.midi_port, args.baud_rate, args.freq_config)
 
     # except KeyboardInterrupt:
     #     parser.exit('Interrupted by user')

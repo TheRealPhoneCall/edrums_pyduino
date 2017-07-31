@@ -12,29 +12,44 @@ class Serial(object):
         print self.serial   
 
     def read_msg(self):        
-        cmd = self.serial.readline()
-        pad = self.serial.readline()
-        vel = self.serial.readline()
-        serial_msg = {
-            'cmd': 'note_on' if (int(cmd) == 1) else 'note_off',
-            'pad': int(pad),
-            'velocity': int(vel)
-        }
-        return serial_msg
+        byte1 = self.serial.readline()
+        byte2 = self.serial.readline()
+        byte3 = self.serial.readline()
+        byte1 = int(byte1)
+        byte2 = int(byte2)
+        byte3 = int(byte3)
 
-    def parse_msg(self, serial_msg):
-        try:
-            parsed_msg = {
-                'cmd': 'note_on' if (serial_msg[0] == 1) else 'note_off',
-                'pad': int(serial_msg[1]),
-                'velocity': int(serial_msg[2])
+        # print byte1, byte2, byte3
+        
+        if byte1 == 0: # note_off command
+            serial_msg = {
+                'cmd': 'note_off',
+                'pad': byte2,
+                'velocity': byte3
             }
-            return parsed_msg
-        except IndexError:
-            return None
+        elif byte1 == 1: # note_on command
+            serial_msg = {
+                'cmd': 'note_on',
+                'pad': byte2,
+                'velocity': byte3
+            }
+        elif byte1 == 2: # control change command
+            serial_msg = {
+                'cmd': 'control_change',
+                'control': byte2,
+                'value': byte3 
+            }
+        elif byte1 == 3: # pitch bend command
+            serial_msg = {
+                'cmd': 'pitchwheel',
+                'pitch': byte2 if (byte2) else byte3,
+            }
+        else:
+            serial_msg = {}
+        return serial_msg
 
     def quit(self):
         print "Serial reading is now terminated."
 
     def __str__(self):
-		return "{}".format(self.serial)
+        return "{}".format(self.serial)

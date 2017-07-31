@@ -17,8 +17,11 @@ from .serials import Serial
 from settings import pads, pad_map
 
 def main(com_port, midi_port, baud_rate, pad_config):
+    # object initiations
     serial = Serial(com_port=com_port, serial_rate=baud_rate)
     midi = Midi(virtual_port=midi_port)
+
+    # pad maps initiation
     current_map = 0
     pad_maps = pads(pad_config)
     pad_map = pad_maps[current_map]
