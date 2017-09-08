@@ -3,102 +3,104 @@
     "name": "reggae",
     "ad_map": "GM",
     "description": "",
-    "pads": {
-        "pad0": {
-            "notes": [
-                {
-                    "note": 49,
-                    "name": "LCYM",
-                    "min_vel": 10,
-                    "max_vel": 110,
-                    "threshold": 10,
-                    "channel": 0,
-                    "port": "berdrums 1"
-                }
-            ]
-        },
-        "pad1": {
-            "notes": [
-                {
-                    "note": 57,
-                    "name": "RCYM",
-                    "min_vel": 10,
-                    "max_vel": 110,
-                    "threshold": 10,
-                    "channel": 0,
-                    "port": "berdrums 1"
-                }
-            ]
-        },
-        "pad2": {
-            "notes": [
-                {
-                    "note": 114,
-                    "name": "Tom 3 Open Hit",
-                    "min_vel": 5,
-                    "max_vel": 50,
-                    "threshold": 10,
-                    "channel": 0,
-                    "port": "berdrums 1"
-                },
-                {
-                    "note": 41,
-                    "name": "Tom 4 Open Hit",
-                    "min_vel": 5,
-                    "max_vel": 90,
-                    "threshold": 10,
-                    "channel": 0,
-                    "port": "berdrums 1"
-                }
-            ]
-        },
-        "pad3": {
-            "notes": [
-                {
-                    "note": 114,
-                    "name": "Tom 3 Open Hit",
-                    "min_vel": 5,
-                    "max_vel": 50,
-                    "threshold": 10,
-                    "channel": 0,
-                    "port": "berdrums 1"
-                },
-                {
-                    "note": 41,
-                    "name": "Tom 4 Open Hit",
-                    "min_vel": 5,
-                    "max_vel": 90,
-                    "threshold": 10,
-                    "channel": 0,
-                    "port": "berdrums 1"
-                }
-            ]
-        },
-        "pad4": {
-            "notes": [
-                {
-                    "note": 41,
-                    "name": "Tom 4 Open Hit",
-                    "min_vel": 0,
-                    "max_vel": 70,
-                    "threshold": 10,
-                    "channel": 0,
-                    "port": "berdrums 1"
-                }
-            ]
-        },
-        "pad5": {
-            "notes": [
-                {
-                    "note": 41,
-                    "name": "Tom 4 Open Hit",
-                    "min_vel": 0,
-                    "max_vel": 70,
-                    "threshold": 10,
-                    "channel": 0,
-                    "port": "berdrums 1"
-                }
-            ]
-        }
-    }
+    "maps": [
+        {
+            "pad0": {
+                "notes": [
+                    {
+                        "note": 49,
+                        "name": "LCYM",
+                        "min_vel": 10,
+                        "max_vel": 110,
+                        "threshold": 10,
+                        "channel": 0,
+                        "port": "berdrums 1"
+                    }
+                ]
+            },
+            "pad1": {
+                "notes": [
+                    {
+                        "note": 57,
+                        "name": "RCYM",
+                        "min_vel": 10,
+                        "max_vel": 110,
+                        "threshold": 10,
+                        "channel": 0,
+                        "port": "berdrums 1"
+                    }
+                ]
+            },
+            "pad2": {
+                "notes": [
+                    {
+                        "note": 114,
+                        "name": "Tom 3 Open Hit",
+                        "min_vel": 5,
+                        "max_vel": 50,
+                        "threshold": 10,
+                        "channel": 0,
+                        "port": "berdrums 1"
+                    },
+                    {
+                        "note": 41,
+                        "name": "Tom 4 Open Hit",
+                        "min_vel": 5,
+                        "max_vel": 90,
+                        "threshold": 10,
+                        "channel": 0,
+                        "port": "berdrums 1"
+                    }
+                ]
+            },
+            "pad3": {
+                "notes": [
+                    {
+                        "note": 114,
+                        "name": "Tom 3 Open Hit",
+                        "min_vel": 5,
+                        "max_vel": 50,
+                        "threshold": 10,
+                        "channel": 0,
+                        "port": "berdrums 1"
+                    },
+                    {
+                        "note": 41,
+                        "name": "Tom 4 Open Hit",
+                        "min_vel": 5,
+                        "max_vel": 90,
+                        "threshold": 10,
+                        "channel": 0,
+                        "port": "berdrums 1"
+                    }
+                ]
+            },
+            "pad4": {
+                "notes": [
+                    {
+                        "note": 41,
+                        "name": "Tom 4 Open Hit",
+                        "min_vel": 0,
+                        "max_vel": 70,
+                        "threshold": 10,
+                        "channel": 0,
+                        "port": "berdrums 1"
+                    }
+                ]
+            },
+            "pad5": {
+                "notes": [
+                    {
+                        "note": 41,
+                        "name": "Tom 4 Open Hit",
+                        "min_vel": 0,
+                        "max_vel": 70,
+                        "threshold": 10,
+                        "channel": 0,
+                        "port": "berdrums 1"
+                    }
+                ]
+            }
+        }   
+    ]
 }

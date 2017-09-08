@@ -83,19 +83,51 @@ class SpectralAnalyser(object):
 
         return freq0
 
+    def find_dominant_freq_region(self, spectrum):
+        high_freq_number = 90
+        spectrum_low_size = 600
+        spectrum_high_size = WINDOW_SIZE - spectrum_low_size
+
+        spectrum_low = spectrum[:spectrum_low_size]        
+        spectrum_high = spectrum[spectrum_low_size:]
+
+        avg_psd_low = sum(spectrum_low)
+        avg_psd_high = sum(spectrum_high)
+
+        num_low_freqs = sum(i > 10 for i in spectrum_low)
+        num_high_freqs = sum(i > 10 for i in spectrum_high)
+        
+        print "spectrum_low_num: ", num_low_freqs
+        print "spectrum_high_num:", num_high_freqs
+        # print "spectrum_low=%s,\tspectrum_high=%s" %(len(spectrum_low), len(spectrum_high))
+        print "avg_psd_low=%s,\tavg_psd_high=%s" %(avg_psd_low, avg_psd_high)
+        if num_high_freqs < high_freq_number:
+            # detects boom slap
+            return "low_dominant"
+        else:
+            # detects snare slap
+            return "high_dominant"
+
     def process_data(self, data):
         spectrum = self.autopower_spectrum(data)
-
         onset = self.find_onset(spectrum)
+        
         self.last_spectrum = spectrum
 
         if self.first_peak:
             self.first_peak = False
-            return
+            return {"freq0": None, "dominant_freq": None, "onset": None}
 
         if onset:
-            freq0 = self.find_fundamental_freq(data)
-            return freq0
+            # freq0 = self.find_fundamental_freq(data)
+            freq0 = 1
+            dominant_freq = self.find_dominant_freq_region(spectrum)
+            
+            # print "spectrum length: ", len(spectrum)
+            # for spec in spectrum:
+            #     print spec, ", "
+            # print "onset: ", onset
+            return {"freq0": freq0, "dominant_freq": dominant_freq, "onset": onset}
 
     def autopower_spectrum(self, samples):
         """
@@ -120,51 +152,3 @@ class SpectralAnalyser(object):
         log_spectrum = np.log(np.abs(spectrum))
         cepstrum = np.fft.ifft(log_spectrum).real
         return cepstrum
-
-
-class StreamProcessor(object):
-
-    FREQS_BUF_SIZE = 11
-
-    def __init__(self):
-        self.spectral_analyser = SpectralAnalyser(
-            window_size=WINDOW_SIZE,
-            segments_buf=RING_BUFFER_SIZE)
-        # self.synth = FluidSynth()
-        self.midi = Midi(virtual_port="berdware 1")
-
-    def run(self):
-        pya = PyAudio()
-        self.stream = pya.open(
-            format=paInt16,
-            channels=1,
-            rate=SAMPLE_RATE,
-            input=True,
-            frames_per_buffer=WINDOW_SIZE,
-            stream_callback=self.process_frame,
-        )
-        self.stream.start_stream()
-
-        while self.stream.is_active() and not raw_input():
-            time.sleep(0.1)
-
-        self.stream.stop_stream()
-        self.stream.close()
-        pya.terminate()
-
-    def process_frame(self, data, frame_count, time_info, status_flag):
-        data_array = np.fromstring(data, dtype=np.int16)
-        freq0 = self.spectral_analyser.process_data(data_array)
-        if freq0:
-            # Onset detected
-            print("Note detected; fundamental frequency: ", freq0)
-            midi_note_value = int(hz_to_midi(freq0)[0])
-            print("Midi note value: ", midi_note_value)
-            note = RTNote(midi_note_value, 100, 0.5)
-            self.synth.play_note(note)
-        return (data, paContinue)
-
-
-if __name__ == '__main__':
-    stream_proc = StreamProcessor()
-    stream_proc.run()

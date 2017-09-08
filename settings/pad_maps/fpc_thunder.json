@@ -1,18 +1,20 @@
 {
     "id": 1,
-    "name": "rock",
-    "ad_map": "GM",
+    "name": "basic",
+    "plugin": "FPC",
+    "ad_map": "FPC",
+    "map_table": "http://www.electronics.dit.ie/staff/tscarff/Music_technology/midi/midi_note_numbers_for_octaves.htm",
     "description": "",
     "maps": [
         {
             "pad0": {
                 "notes": [
                     {
-                        "note": 127,
-                        "name": "Snare Shallow Rimshot",
-                        "min_vel": 0,
-                        "max_vel": 127,
-                        "threshold": 10,
+                        "note": 37,
+                        "name": "Sidestick",
+                        "min_vel": 10,
+                        "max_vel": 110,
+                        "threshold": 30,
                         "channel": 0,
                         "port": "berdrums 1"
                     }
@@ -21,11 +23,11 @@
             "pad1": {
                 "notes": [
                     {
-                        "note": 37,
-                        "name": "Snare SideStick",
-                        "min_vel": 0,
-                        "max_vel": 127,
-                        "threshold": 10,
+                        "note": 40,
+                        "name": "Snare 1",
+                        "min_vel": 10,
+                        "max_vel": 110,
+                        "threshold": 30,
                         "channel": 0,
                         "port": "berdrums 1"
                     }
@@ -36,8 +38,8 @@
                     {
                         "note": 36,
                         "name": "KICK",
-                        "min_vel": 0,
-                        "max_vel": 127,
+                        "min_vel": 10,
+                        "max_vel": 110,
                         "threshold": 10,
                         "channel": 0,
                         "port": "berdrums 1"
@@ -47,11 +49,20 @@
             "pad3": {
                 "notes": [
                     {
-                        "note": 50,
-                        "name": "LTOM",
-                        "min_vel": 0,
-                        "max_vel": 127,
-                        "threshold": 30,
+                        "note": 43,
+                        "name": "Floor Tom",
+                        "min_vel": 100,
+                        "max_vel": 126,
+                        "threshold": 10,
+                        "channel": 0,
+                        "port": "berdrums 1"
+                    },
+                    {
+                        "note": 45,
+                        "name": "Floor Tom 2",
+                        "min_vel": 100,
+                        "max_vel": 126,
+                        "threshold": 10,
                         "channel": 0,
                         "port": "berdrums 1"
                     }
@@ -60,48 +71,59 @@
             "pad4": {
                 "notes": [
                     {
-                        "note": 49,
-                        "name": "LCYM",
-                        "min_vel": 0,
-                        "max_vel": 127,
+                        "note": 36,
+                        "name": "KICK",
+                        "min_vel": 10,
+                        "max_vel": 110,
                         "threshold": 10,
                         "channel": 0,
                         "port": "berdrums 1"
                     },
                     {
-                        "note": 36,
-                        "name": "KICK",
-                        "min_vel": 50,
+                        "note": 55,
+                        "name": "Crash",
+                        "min_vel": 40,
                         "max_vel": 110,
                         "threshold": 10,
                         "channel": 0,
                         "port": "berdrums 1"
                     }
+                    
                 ]
             },
             "pad5": {
                 "notes": [
                     {
-                        "note": 41,
-                        "name": "FTOM",
-                        "min_vel": 0,
-                        "max_vel": 127,
+                        "note": 43,
+                        "name": "Floor Tom",
+                        "min_vel": 100,
+                        "max_vel": 126,
+                        "threshold": 10,
+                        "channel": 0,
+                        "port": "berdrums 1"
+                    },
+                    {
+                        "note": 45,
+                        "name": "Floor Tom 2",
+                        "min_vel": 100,
+                        "max_vel": 126,
                         "threshold": 10,
                         "channel": 0,
                         "port": "berdrums 1"
                     }
                 ]
             }
+            
         },
         {
             "pad0": {
                 "notes": [
                     {
-                        "note": 127,
-                        "name": "Snare Shallow Rimshot",
-                        "min_vel": 0,
-                        "max_vel": 127,
-                        "threshold": 10,
+                        "note": 80,
+                        "name": "Thunder - mid - cut",
+                        "min_vel": 80,
+                        "max_vel": 100,
+                        "threshold": 30,
                         "channel": 0,
                         "port": "berdrums 1"
                     }
@@ -110,11 +132,11 @@
             "pad1": {
                 "notes": [
                     {
-                        "note": 127,
-                        "name": "Snare Shallow Rimshot",
-                        "min_vel": 0,
-                        "max_vel": 127,
-                        "threshold": 10,
+                        "note": 54,
+                        "name": "Thunder - mid",
+                        "min_vel": 80,
+                        "max_vel": 100,
+                        "threshold": 30,
                         "channel": 0,
                         "port": "berdrums 1"
                     }
@@ -123,10 +145,10 @@
             "pad2": {
                 "notes": [
                     {
-                        "note": 36,
-                        "name": "KICK",
-                        "min_vel": 0,
-                        "max_vel": 127,
+                        "note": 69,
+                        "name": "Thunder - high - cut",
+                        "min_vel": 80,
+                        "max_vel": 100,
                         "threshold": 10,
                         "channel": 0,
                         "port": "berdrums 1"
@@ -136,10 +158,10 @@
             "pad3": {
                 "notes": [
                     {
-                        "note": 50,
-                        "name": "LTOM",
-                        "min_vel": 0,
-                        "max_vel": 127,
+                        "note": 81,
+                        "name": "Thunder - high",
+                        "min_vel": 80,
+                        "max_vel": 100,
                         "threshold": 30,
                         "channel": 0,
                         "port": "berdrums 1"
@@ -149,38 +171,29 @@
             "pad4": {
                 "notes": [
                     {
-                        "note": 49,
-                        "name": "LCYM",
-                        "min_vel": 0,
-                        "max_vel": 127,
+                        "note": 66,
+                        "name": "Thunder - high - cut",
+                        "min_vel": 80,
+                        "max_vel": 100,
                         "threshold": 10,
                         "channel": 0,
                         "port": "berdrums 1"
-                    },
-                    {
-                        "note": 36,
-                        "name": "KICK",
-                        "min_vel": 50,
-                        "max_vel": 110,
-                        "threshold": 10,
-                        "channel": 0,
-                        "port": "berdrums 1"
-                    }
+                    }                    
                 ]
             },
             "pad5": {
                 "notes": [
                     {
-                        "note": 41,
-                        "name": "FTOM",
-                        "min_vel": 0,
-                        "max_vel": 127,
+                        "note": 65,
+                        "name": "Thunder - high",
+                        "min_vel": 80,
+                        "max_vel": 100,
                         "threshold": 10,
                         "channel": 0,
                         "port": "berdrums 1"
                     }
                 ]
             }
-        }
+        }      
     ]
 }

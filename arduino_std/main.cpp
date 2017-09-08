@@ -30,14 +30,19 @@
 #define NUM_PIEZOS 6
 #define START_SLOT 0     //first analog slot of piezos
 
+//Digital pad defines
+#define NUM_DPADS 8
+#define DPAD_START_SLOT 4 //first digital slot of pads
+
 //Pad defines
 // pads:
 #define PAD0 0    //top left
-#define PAD1 3    //top right
+#define PAD1 1    //top right
 #define PAD2 2    //middle left
-#define PAD3 1    //middle right
+#define PAD3 3    //middle right
 #define PAD4 4    //lower left
 #define PAD5 5    //lower right
+
 // thresholds:
 #define PAD0_THRESHOLD 25    
 #define PAD1_THRESHOLD 25
@@ -82,7 +87,7 @@
 #define PBEND_STEP 50
 // control change
 #define CC_CMD 2
-#define CC_NEXT_PIN 3
+#define CC_NEXT_PIN 4
 #define CC_NEXT_NUMBER 20
 #define CC_BACK_PIN 2
 #define CC_BACK_NUMBER 21
@@ -123,6 +128,10 @@ bool isLastPeakZeroed[NUM_PIEZOS];
 
 unsigned long lastPeakTime[NUM_PIEZOS];
 unsigned long lastNoteTime[NUM_PIEZOS];
+
+// buffers for digital pads
+unsigned short dpadMap[NUM_DPADS];
+bool btnDpad_isClicked[NUM_DPADS];
 
 void midiNoteOn(byte pad, byte velocity)
 {
@@ -260,6 +269,23 @@ void readPadHits(){
   }
 }
 
+void readDPadHits(){
+  for(short i=DPAD_START_SLOT; i<DPAD_START_SLOT + NUM_DPADS; ++i)
+  {
+    unsigned short idx = i - DPAD_START_SLOT;
+    int btnDpadVal = digitalRead(i);
+
+    if ((btnDpad_isClicked[idx]) && (btnDpadVal == HIGH)){
+      unsigned short dpad = dpadMap[idx];
+      padFire(dpad, MAX_MIDI_VELOCITY);
+      delay(50); // delay a bit to avoid debouncing
+      btnDpad_isClicked[idx] = false;
+    } else {
+      if (btnDpadVal == LOW) btnDpad_isClicked[idx] = true;
+    }
+  }
+}
+
 void readPitchBends(){
   //get pitch bend value
   short newPbendVal = analogRead(PBEND_PIN);
@@ -308,13 +334,7 @@ void readControlChanges(){
   }  
 }
 
-void setup()
-{
-  Serial.begin(SERIAL_RATE);
-
-  while (!Serial);
-  
-  //initialize globals
+void initialize_analog_pads(){
   for(short i=0; i<NUM_PIEZOS; ++i)
   {
     currentSignalIndex[i] = 0;
@@ -356,15 +376,46 @@ void setup()
   padMap[3] = PAD3;
   padMap[4] = PAD4;
   padMap[5] = PAD5;  
+}
+
+void initialize_digital_pads(){
+  for(short i= DPAD_START_SLOT; i< DPAD_START_SLOT + NUM_DPADS; ++i)
+  {
+    unsigned short idx = i - DPAD_START_SLOT;
+    pinMode(i, INPUT);
+    btnDpad_isClicked[idx] = false;
+  }
+
+  dpadMap[0] = DPAD0;
+  dpadMap[1] = DPAD1;
+  dpadMap[2] = DPAD2;
+  dpadMap[3] = DPAD3;
+  dpadMap[4] = DPAD4;
+  dpadMap[5] = DPAD5;
+  dpadMap[6] = DPAD6;
+  dpadMap[8] = DPAD7;
+}
+
+void setup()
+{
+  Serial.begin(SERIAL_RATE);
+
+  while (!Serial);
+  
+  initialize_analog_pads();
+  //initialize_digital_pads();  
 
   pinMode(CC_BACK_PIN, INPUT);
   pinMode(CC_NEXT_PIN, INPUT);
   pinMode(PBEND_PIN, INPUT);
+
+
 }
 
 void loop()
 {  
   readPadHits();
+  // readDPadHits();
   // readPitchBends();
   readControlChanges();  
 }

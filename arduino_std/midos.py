@@ -89,8 +89,8 @@ class Midi(object):
 
     def quit(self):
         self.midi.save(self.midi_file)
-        print "Current MIDI message:"
-        print self.midi_msgs
+        # print "Current MIDI message:"
+        # print self.midi_msgs
 
         # close port
         self.outport.close()

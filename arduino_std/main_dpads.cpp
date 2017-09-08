@@ -34,7 +34,7 @@
 #define NUM_DPADS 8
 #define DPAD_START_SLOT 4 //first digital slot of pads
 
-//Analog pad defines
+//Pad defines
 // pads:
 #define PAD0 0    //top left
 #define PAD1 1    //top right
@@ -43,36 +43,6 @@
 #define PAD4 4    //lower left
 #define PAD5 5    //lower right
 
-// thresholds:
-#define PAD0_THRESHOLD 25    
-#define PAD1_THRESHOLD 25
-#define PAD2_THRESHOLD 25
-#define PAD3_THRESHOLD 25
-#define PAD4_THRESHOLD 25
-#define PAD5_THRESHOLD 25
-// min readings:
-#define PAD0_MIN 0   
-#define PAD1_MIN 0
-#define PAD2_MIN 0
-#define PAD3_MIN 0
-#define PAD4_MIN 0
-#define PAD5_MIN 0
-// max readings:
-#define PAD0_MAX 1024   
-#define PAD1_MAX 1024
-#define PAD2_MAX 900
-#define PAD3_MAX 900
-#define PAD4_MAX 1024
-#define PAD5_MAX 1024
-
-// special pads:
-#define KICK_PAD 2
-#define LTOM_PAD 3
-#define CYM_PAD 6
-#define SNARE1_PAD 0
-#define SNARE2_PAD 1 
-
-//Digital pad defines
 // dpads:
 #define DPAD0 6    //left most
 #define DPAD1 7    
@@ -92,6 +62,35 @@
 #define DPAD6_PIN 10
 #define DPAD7_PIN 11   //right most
 
+// thresholds:
+#define PAD0_THRESHOLD 25    
+#define PAD1_THRESHOLD 25
+#define PAD2_THRESHOLD 20
+#define PAD3_THRESHOLD 40
+#define PAD4_THRESHOLD 20
+#define PAD5_THRESHOLD 20
+// min readings:
+#define PAD0_MIN 10   
+#define PAD1_MIN 10
+#define PAD2_MIN 0
+#define PAD3_MIN 10
+#define PAD4_MIN 0
+#define PAD5_MIN 0
+// max readings:
+#define PAD0_MAX 1024   
+#define PAD1_MAX 1024
+#define PAD2_MAX 900
+#define PAD3_MAX 400
+#define PAD4_MAX 800
+#define PAD5_MAX 800
+
+// special pads:
+#define KICK_PAD 2
+#define LTOM_PAD 3
+#define CYM_PAD 6
+#define SNARE1_PAD 0
+#define SNARE2_PAD 1 
+
 //MIDI defines
 // MIDI baud rate
 #define SERIAL_RATE 31250
@@ -107,7 +106,7 @@
 #define PBEND_STEP 50
 // control change
 #define CC_CMD 2
-#define CC_NEXT_PIN 4
+#define CC_NEXT_PIN 3
 #define CC_NEXT_NUMBER 20
 #define CC_BACK_PIN 2
 #define CC_BACK_NUMBER 21
@@ -301,7 +300,7 @@ void readDPadHits(){
       delay(50); // delay a bit to avoid debouncing
       btnDpad_isClicked[idx] = false;
     } else {
-      if (btnDpadVal == LOW) btnDpad_isClicked[idx] = true;
+      if (btnDpadVal == HIGH) btnDpad_isClicked[idx] = true;
     }
   }
 }
@@ -422,8 +421,8 @@ void setup()
 
   while (!Serial);
   
-  initialize_analog_pads();
-  //initialize_digital_pads();  
+  //initialize_analog_pads();
+  initialize_digital_pads();  
 
   pinMode(CC_BACK_PIN, INPUT);
   pinMode(CC_NEXT_PIN, INPUT);
@@ -434,8 +433,8 @@ void setup()
 
 void loop()
 {  
-  readPadHits();
-  // readDPadHits();
+  //readPadHits();
+  readDPadHits();
   // readPitchBends();
   readControlChanges();  
 }

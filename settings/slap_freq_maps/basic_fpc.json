@@ -1,7 +1,7 @@
 {
     "id": 1,
     "name": "basic",
-    "ad_map": "GM",
+    "ad_map": "FPC",
     "description": "",
     "maps": [
         {
@@ -11,20 +11,10 @@
                 "max_freq": 2000,
                 "notes": [
                     {
-                        "note": 49,
-                        "name": "LCYM",
-                        "velocity": 100,
-                        "min_vel": 10,                        
-                        "max_vel": 110,
-                        "threshold": 10,
-                        "channel": 0,
-                        "port": "berdrums 1"
-                    },
-                    {
                         "note": 36,
                         "name": "KICK",
                         "velocity": 100,
-                        "min_vel": 50,
+                        "min_vel": 10,
                         "max_vel": 110,
                         "threshold": 10,
                         "channel": 0,
@@ -38,8 +28,8 @@
                 "max_freq": 599,
                 "notes": [
                     {
-                        "note": 109,
-                        "name": "Snare RimShot db1",
+                        "note": 40,
+                        "name": "Snare 1",
                         "velocity": 100,
                         "min_vel": 0,
                         "max_vel": 126,

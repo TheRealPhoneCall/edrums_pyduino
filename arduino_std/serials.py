@@ -27,12 +27,14 @@ class Serial(object):
                 'pad': byte2,
                 'velocity': byte3
             }
+            # print byte2
         elif byte1 == 1: # note_on command
             serial_msg = {
                 'cmd': 'note_on',
                 'pad': byte2,
                 'velocity': byte3
             }
+            # print byte2
         elif byte1 == 2: # control change command
             serial_msg = {
                 'cmd': 'control_change',

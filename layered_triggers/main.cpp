@@ -23,7 +23,7 @@
 #define SERIAL_RATE 31250
 
 // pitch bend
-#define PBEND_PIN 7
+#define PBEND_PIN 0
 #define PBEND_CMD 3
 #define PBEND_STEP 100
 

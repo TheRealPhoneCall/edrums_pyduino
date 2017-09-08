@@ -1,0 +1,89 @@
+{
+    "id": 1,
+    "name": "believer - imagine dragons",
+    "ad_map": "GM",
+    "description": "",
+    "maps": [
+        {
+            "pad0": {
+                "notes": [
+                    {
+                        "note": 60,
+                        "name": "Snare",
+                        "min_vel": 80,
+                        "max_vel": 100,
+                        "threshold": 10,
+                        "channel": 0,
+                        "port": "berdrums 1"
+                    }
+                ]
+            },
+            "pad1": {
+                "notes": [
+                    {
+                        "note": 66,
+                        "name": "Clap",
+                        "min_vel": 80,
+                        "max_vel": 100,
+                        "threshold": 30,
+                        "channel": 0,
+                        "port": "berdrums 1"
+                    }
+                ]
+            },
+            "pad2": {
+                "notes": [
+                    {
+                        "note": 104,
+                        "name": "Tom Low",
+                        "min_vel": 80,
+                        "max_vel": 100,
+                        "threshold": 0,
+                        "channel": 0,
+                        "port": "berdrums 1"
+                    }
+                ]
+            },
+            "pad3": {
+                "notes": [
+                    {
+                        "note": 64,
+                        "name": "Tom High",
+                        "min_vel": 80,
+                        "max_vel": 100,
+                        "threshold": 0,
+                        "channel": 0,
+                        "port": "berdrums 1"
+                    }
+                ]
+            },
+            "pad4": {
+                "notes": [
+                    {
+                        "note": 61,
+                        "name": "Kick with Base",
+                        "min_vel": 80,
+                        "max_vel": 100,
+                        "threshold": 10,
+                        "channel": 0,
+                        "port": "berdrums 1"
+                    }                    
+                ]
+            },
+            "pad5": {
+                "notes": [
+                    {
+                        "note": 62,
+                        "name": "Pre-chorus Base",
+                        "min_vel": 80,
+                        "max_vel": 100,
+                        "threshold": 10,
+                        "channel": 0,
+                        "port": "berdrums 1"
+                    }
+                ]
+            }
+        }
+                       
+    ]
+}

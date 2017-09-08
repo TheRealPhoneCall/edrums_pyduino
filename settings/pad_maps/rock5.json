@@ -2,16 +2,25 @@
     "id": 1,
     "name": "rock",
     "ad_map": "GM",
-    "description": "",
+    "description": "With snare sidestick",
     "maps": [
         {
             "pad0": {
                 "notes": [
                     {
-                        "note": 127,
-                        "name": "Snare Shallow Rimshot",
+                        "note": 49,
+                        "name": "LCYM",
+                        "min_vel": 30,
+                        "max_vel": 50,
+                        "threshold": 10,
+                        "channel": 0,
+                        "port": "berdrums 1"
+                    },
+                    {
+                        "note": 36,
+                        "name": "KICK",
                         "min_vel": 0,
-                        "max_vel": 127,
+                        "max_vel": 50,
                         "threshold": 10,
                         "channel": 0,
                         "port": "berdrums 1"
@@ -21,8 +30,97 @@
             "pad1": {
                 "notes": [
                     {
+                        "note": 57,
+                        "name": "RCYM",
+                        "min_vel": 0,
+                        "max_vel": 127,
+                        "threshold": 10,
+                        "channel": 0,
+                        "port": "berdrums 1"
+                    }
+                ]
+            },
+            "pad2": {
+                "notes": [
+                    {
+                        "note": 36,
+                        "name": "KICK",
+                        "min_vel": 0,
+                        "max_vel": 30,
+                        "threshold": 10,
+                        "channel": 0,
+                        "port": "berdrums 1"
+                    }
+                ]
+            },
+            "pad3": {
+                "notes": [
+                    {
+                        "note": 50,
+                        "name": "LTOM",
+                        "min_vel": 0,
+                        "max_vel": 127,
+                        "threshold": 30,
+                        "channel": 0,
+                        "port": "berdrums 1"
+                    }
+                ]
+            },
+            "pad4": {
+                "notes": [
+                    {
                         "note": 37,
-                        "name": "Snare SideStick",
+                        "name": "Snare Sidestick",
+                        "min_vel": 20,
+                        "max_vel": 30,
+                        "threshold": 10,
+                        "channel": 0,
+                        "port": "berdrums 1"
+                    }
+                ]
+            },
+            "pad5": {
+                "notes": [
+                    {
+                        "note": 37,
+                        "name": "Snare Sidestick",
+                        "min_vel": 20,
+                        "max_vel": 30,
+                        "threshold": 10,
+                        "channel": 0,
+                        "port": "berdrums 1"
+                    }
+                ]
+            }
+        },
+        {
+            "pad0": {
+                "notes": [
+                    {
+                        "note": 49,
+                        "name": "LCYM",
+                        "min_vel": 30,
+                        "max_vel": 127,
+                        "threshold": 10,
+                        "channel": 0,
+                        "port": "berdrums 1"
+                    },
+                    {
+                        "note": 36,
+                        "name": "KICK",
+                        "min_vel": 50,
+                        "max_vel": 110,
+                        "threshold": 10,
+                        "channel": 0,
+                        "port": "berdrums 1"
+                    }
+                ]
+            },
+            "pad1": {
+                "notes": [
+                    {
+                        "note": 57,
+                        "name": "RCYM",
                         "min_vel": 0,
                         "max_vel": 127,
                         "threshold": 10,
@@ -60,19 +158,10 @@
             "pad4": {
                 "notes": [
                     {
-                        "note": 49,
-                        "name": "LCYM",
-                        "min_vel": 0,
-                        "max_vel": 127,
-                        "threshold": 10,
-                        "channel": 0,
-                        "port": "berdrums 1"
-                    },
-                    {
-                        "note": 36,
-                        "name": "KICK",
+                        "note": 37,
+                        "name": "Snare Sidestick",
                         "min_vel": 50,
-                        "max_vel": 110,
+                        "max_vel": 127,
                         "threshold": 10,
                         "channel": 0,
                         "port": "berdrums 1"
@@ -82,9 +171,9 @@
             "pad5": {
                 "notes": [
                     {
-                        "note": 41,
-                        "name": "FTOM",
-                        "min_vel": 0,
+                        "note": 37,
+                        "name": "Snare Sidestick",
+                        "min_vel": 50,
                         "max_vel": 127,
                         "threshold": 10,
                         "channel": 0,
@@ -97,10 +186,19 @@
             "pad0": {
                 "notes": [
                     {
-                        "note": 127,
-                        "name": "Snare Shallow Rimshot",
-                        "min_vel": 0,
+                        "note": 49,
+                        "name": "LCYM",
+                        "min_vel": 30,
                         "max_vel": 127,
+                        "threshold": 10,
+                        "channel": 0,
+                        "port": "berdrums 1"
+                    },
+                    {
+                        "note": 36,
+                        "name": "KICK",
+                        "min_vel": 50,
+                        "max_vel": 110,
                         "threshold": 10,
                         "channel": 0,
                         "port": "berdrums 1"
@@ -110,8 +208,8 @@
             "pad1": {
                 "notes": [
                     {
-                        "note": 127,
-                        "name": "Snare Shallow Rimshot",
+                        "note": 57,
+                        "name": "RCYM",
                         "min_vel": 0,
                         "max_vel": 127,
                         "threshold": 10,
@@ -136,22 +234,9 @@
             "pad3": {
                 "notes": [
                     {
-                        "note": 50,
-                        "name": "LTOM",
-                        "min_vel": 0,
-                        "max_vel": 127,
-                        "threshold": 30,
-                        "channel": 0,
-                        "port": "berdrums 1"
-                    }
-                ]
-            },
-            "pad4": {
-                "notes": [
-                    {
                         "note": 49,
                         "name": "LCYM",
-                        "min_vel": 0,
+                        "min_vel": 30,
                         "max_vel": 127,
                         "threshold": 10,
                         "channel": 0,
@@ -168,11 +253,24 @@
                     }
                 ]
             },
+            "pad4": {
+                "notes": [
+                    {
+                        "note": 38,
+                        "name": "Snare Open Hit",
+                        "min_vel": 0,
+                        "max_vel": 127,
+                        "threshold": 10,
+                        "channel": 0,
+                        "port": "berdrums 1"
+                    }
+                ]
+            },
             "pad5": {
                 "notes": [
                     {
-                        "note": 41,
-                        "name": "FTOM",
+                        "note": 38,
+                        "name": "Snare Open Hit",
                         "min_vel": 0,
                         "max_vel": 127,
                         "threshold": 10,

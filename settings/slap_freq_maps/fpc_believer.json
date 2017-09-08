@@ -1,0 +1,80 @@
+{
+    "id": 1,
+    "name": "basic",
+    "ad_map": "FPC",
+    "description": "",
+    "maps": [
+        {
+            "slap_freq0": {
+                "name": "boom",
+                "min_freq": 600,
+                "max_freq": 2000,
+                "notes": [
+                    {
+                        "note": 61,
+                        "name": "Kick with Base",
+                        "velocity": 100,
+                        "min_vel": 80,                        
+                        "max_vel": 110,
+                        "threshold": 10,
+                        "channel": 0,
+                        "port": "berdrums 1"
+                    }
+                ]
+            },
+            "slap_freq1": {
+                "name": "slap",
+                "min_freq": 0,
+                "max_freq": 599,
+                "notes": [
+                    {
+                        "note": 60,
+                        "name": "Snare",
+                        "velocity": 100,
+                        "min_vel": 80,
+                        "max_vel": 126,
+                        "threshold": 10,
+                        "channel": 0,
+                        "port": "berdrums 1"
+                    }
+                ]
+            }
+        },
+        {
+            "slap_freq0": {
+                "name": "boom",
+                "min_freq": 600,
+                "max_freq": 2000,
+                "notes": [
+                    {
+                        "note": 62,
+                        "name": "Pre-chorus Base",
+                        "velocity": 100,
+                        "min_vel": 80,                        
+                        "max_vel": 110,
+                        "threshold": 10,
+                        "channel": 0,
+                        "port": "berdrums 1"
+                    }
+                ]
+            },
+            "slap_freq1": {
+                "name": "slap",
+                "min_freq": 0,
+                "max_freq": 599,
+                "notes": [
+                    {
+                        "note": 60,
+                        "name": "Snare",
+                        "velocity": 100,
+                        "min_vel": 80,
+                        "max_vel": 126,
+                        "threshold": 10,
+                        "channel": 0,
+                        "port": "berdrums 1"
+                    }
+                ]
+            }
+        }              
+    ]
+}

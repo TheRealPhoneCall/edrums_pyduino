@@ -14,7 +14,7 @@ import json
 
 from .midos import Midi
 from .serials import Serial
-from settings import pads, pad_map
+from settings import pads
 
 def main(com_port, midi_port, baud_rate, pad_config):
     # object initiations
